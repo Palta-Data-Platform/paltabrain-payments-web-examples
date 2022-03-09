@@ -1527,6 +1527,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@palta-brain/payments@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.0.6.tgz#fcd7fdae2bddc19f4b5d2a3d58c6992b12856a83"
+  integrity sha512-s0FOxvvNvJwnpZr+mEQ0gpx/kzQrTzJIcmOnNfgyIVxBbT2by4Kxt0GrN/C0vVXfdJc9u6Weu39uX4/vLUfkxw==
+
 "@primer-io/checkout-web@^1.28.0":
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-1.28.0.tgz#d043cfda83ae6de7069688a74b4cf95010a81b6b"
