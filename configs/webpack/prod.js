@@ -13,5 +13,10 @@ module.exports = merge(commonConfig, {
     publicPath: "/",
   },
   devtool: "source-map",
-  plugins: [],
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.API_ENDPOINT": '"https://payments.dev.paltabrain.com"',
+      "process.env.API_KEY": '"public-key-13"',
+    }),
+  ],
 });

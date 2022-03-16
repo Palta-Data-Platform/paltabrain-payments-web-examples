@@ -9,8 +9,8 @@ const customerId = {
 };
 
 const settings = {
-  apiEndpoint: "http://localhost:8080",
-  apiKey: "public-key-13",
+  apiEndpoint: `${process.env.API_ENDPOINT}`,
+  apiKey: `${process.env.API_KEY}`,
   customerId: customerId,
 };
 
