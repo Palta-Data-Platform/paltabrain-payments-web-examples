@@ -12,11 +12,13 @@ const settings = {
   apiEndpoint: `${process.env.API_ENDPOINT}`,
   apiKey: `${process.env.API_KEY}`,
   customerId: customerId,
+  metadata: {
+    workflow: "3ds",
+  },
 };
 
 export const PaymentScreen = (): ReactElement => {
   const loadCheckout = async () => {
-
     const client: PaymentClient = createPaymentClient(settings);
     const pricePoints = await client.getPricePoints();
     await client.renderPaymentForm({
