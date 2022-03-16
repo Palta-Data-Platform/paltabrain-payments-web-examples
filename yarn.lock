@@ -1527,15 +1527,22 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@palta-brain/payments@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.0.6.tgz#fcd7fdae2bddc19f4b5d2a3d58c6992b12856a83"
-  integrity sha512-s0FOxvvNvJwnpZr+mEQ0gpx/kzQrTzJIcmOnNfgyIVxBbT2by4Kxt0GrN/C0vVXfdJc9u6Weu39uX4/vLUfkxw==
+"@palta-brain/payments@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.0.10.tgz#93a6923d4de15468eec847d5c862e20982394d6d"
+  integrity sha512-0pmdo5kJtWON50MyGegmGdU9KALmUgRl8X6f3vxSqmrRBQpF532EavLOr/jxeliaLU+nmP9hiCEfALA1kY6H3Q==
+  dependencies:
+    "@primer-io/checkout-web" "^1.29.0"
 
 "@primer-io/checkout-web@^1.28.0":
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-1.28.0.tgz#d043cfda83ae6de7069688a74b4cf95010a81b6b"
   integrity sha512-+AeLQtoSs/BSW68of36smivP0dc9B6VWeeL+YZB28kfE+K5NFiNsqETVv+kdOJSixzjVq3wj5Bo+EInfot7o/g==
+
+"@primer-io/checkout-web@^1.29.0":
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-1.29.0.tgz#470191c2eff7da1106a612e7714d38801f62732c"
+  integrity sha512-EzIIHbJW8GGyH/EsTzcQbbyx8BbOKE9t3PaGp6qrQNDcBnivj7oLtmISgBmwDCoPNfGP9mlJ2URoq+SVVjWMnA==
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"

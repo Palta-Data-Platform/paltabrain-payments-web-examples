@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect } from "react";
 import "@primer-io/checkout-web/dist/Checkout.css";
 import { createPaymentClient, PaymentClient } from "@palta-brain/payments";
 
@@ -8,17 +8,32 @@ const customerId = {
   value: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 };
 
-const settings = {
-  apiEndpoint: `${process.env.API_ENDPOINT}`,
-  apiKey: `${process.env.API_KEY}`,
-  customerId: customerId,
-  metadata: {
-    workflow: "3ds",
-  },
-};
+function useQueryParams<
+  Params extends { [K in keyof Params]?: string } = Record<string, any>,
+>(): Params {
+  const params = new URLSearchParams(window ? window.location.search : {});
 
+  return new Proxy<Params>({} as Params, {
+    get(target, prop) {
+      return params.get(prop as string);
+    },
+  });
+}
 export const PaymentScreen = (): ReactElement => {
+  const { workflow } = useQueryParams<{
+    workflow: string;
+  }>();
+
   const loadCheckout = async () => {
+    const settings = {
+      apiEndpoint: `${process.env.API_ENDPOINT}`,
+      apiKey: `${process.env.API_KEY}`,
+      customerId: customerId,
+      metadata: {
+        workflow: workflow ?? "",
+      },
+    };
+
     const client: PaymentClient = createPaymentClient(settings);
     const pricePoints = await client.getPricePoints();
     await client.renderPaymentForm({
