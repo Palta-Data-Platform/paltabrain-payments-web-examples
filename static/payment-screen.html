@@ -17,14 +17,20 @@
             type: "merchant-uuid",
             value: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         };
+        const params = new URLSearchParams(window ? window.location.search : {});
+        const workflow = params.get('workflow');
         const settings = {
-            apiEndpoint: `http://localhost:8080`,
+            apiEndpoint: 'http://localhost:8080',
             apiKey: 'public-key-13',
             customerId: customerId,
             metadata: {
-                workflow: "3ds",
+                workflow: workflow ? workflow : "",
             },
         };
+
+        if (window.location.hostname !== 'localhost') {
+            settings.apiEndpoint = 'https://payments.dev.paltabrain.com'
+        }
 
         const client = paltaBrainPayments.createPaymentClient(settings);
         client.getPricePoints().then((pricePoints) => {
