@@ -2,6 +2,7 @@
 const { merge } = require("webpack-merge");
 const { resolve } = require("path");
 const webpack = require("webpack");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const commonConfig = require("./common");
 
@@ -15,6 +16,11 @@ module.exports = merge(commonConfig, {
   },
   devtool: "source-map",
   plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        { from:  resolve(__dirname, "../../static"), to:  resolve(__dirname, "../../dist") },
+      ],
+    }),
     new webpack.DefinePlugin({
       "process.env.API_ENDPOINT": '"https://payments.dev.paltabrain.com"',
       "process.env.API_KEY": '"public-key-13"',

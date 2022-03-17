@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Pure html implementation</title>
+    <link href="https://unpkg.com/@primer-io/checkout-web@1.29.0/dist/Checkout.css" rel="stylesheet">
+    <script src="https://unpkg.com/@primer-io/checkout-web@1.29.0/dist/loader.js"></script>
+    <script src="https://unpkg.com/@palta-brain/payments@0.0.11/dist/umd/index.js"></script>
+</head>
+<body>
+    Payment Screen
+    <br />
+    <div id="checkout-container"></div>
+    <script>
+        const customerId = {
+            type: "merchant-uuid",
+            value: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        };
+        const settings = {
+            apiEndpoint: `http://localhost:8080`,
+            apiKey: 'public-key-13',
+            customerId: customerId,
+            metadata: {
+                workflow: "3ds",
+            },
+        };
+
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        client.getPricePoints().then((pricePoints) => {
+            client.renderPaymentForm({
+                containerId: "#checkout-container",
+                sku: pricePoints[0].sku,
+            });
+        })
+    </script>
+</body>
+</html>
