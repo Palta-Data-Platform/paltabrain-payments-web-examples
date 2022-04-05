@@ -8,30 +8,20 @@ const customerId = {
   value: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 };
 
-function useQueryParams<
-  Params extends { [K in keyof Params]?: string } = Record<string, any>,
->(): Params {
-  const params = new URLSearchParams(window ? window.location.search : {});
-
-  return new Proxy<Params>({} as Params, {
-    get(target, prop) {
-      return params.get(prop as string);
-    },
-  });
-}
 export const PaymentScreen = (): ReactElement => {
-  const { workflow } = useQueryParams<{
-    workflow: string;
-  }>();
-
   const loadCheckout = async () => {
+    const metadata: Record<string, any> = {};
+
+    const params = new URLSearchParams(window ? window.location.search : {});
+    params.forEach((val, key) => {
+      metadata[key] = val;
+    });
+
     const settings = {
       apiEndpoint: `${process.env.API_ENDPOINT}`,
       apiKey: `${process.env.API_KEY}`,
       customerId: customerId,
-      metadata: {
-        workflow: workflow ?? "",
-      },
+      metadata,
     };
 
     const client: PaymentClient = createPaymentClient(settings);
