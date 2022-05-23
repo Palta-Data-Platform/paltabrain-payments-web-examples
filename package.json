@@ -72,7 +72,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@palta-brain/payments": "latest",
+    "@palta-brain/payments": "^0.0.19",
     "@primer-io/checkout-web": "^1.28.0"
   }
 }
