@@ -27,13 +27,12 @@ export const PaymentScreen = (): ReactElement => {
     const settings = {
       apiEndpoint: `${process.env.API_ENDPOINT}`,
       apiKey: `${process.env.API_KEY}`,
-      customerId: customerId,
       metadata,
     };
 
     const client: PaymentClient = createPaymentClient(settings);
     setClient(client);
-    const pricePoints = await client.getPricePoints();
+    const pricePoints = await client.getPricePoints({ customerId: null });
     setPricePoints(pricePoints);
   };
 
@@ -43,11 +42,23 @@ export const PaymentScreen = (): ReactElement => {
 
   const buy = (sku: string) => {
     return () => {
-      client.renderPaymentForm({
-        containerId: "#checkout-container",
-        sku: sku,
+      client?.showPaymentForm({
+        containerId: "checkout-container",
+        ident: sku,
+        orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+        customerId: customerId,
       });
     };
+  };
+
+  const discount = (price: number, percentage: number) => {
+    if (0 < price) {
+      return "discount is " + price;
+    }
+    if (0 < percentage) {
+      return "discount is " + percentage + "%";
+    }
+    return "";
   };
 
   return (
@@ -55,7 +66,7 @@ export const PaymentScreen = (): ReactElement => {
       Payment Screen
       <table>
         <tr>
-          <td>SKU & Subscription type</td>
+          <td>SKU</td>
           <td>Intro price</td>
           <td>Subscription price</td>
         </tr>
@@ -63,16 +74,26 @@ export const PaymentScreen = (): ReactElement => {
           return (
             <tr>
               <td>
-                {pricePoint.sku} - {pricePoint.subscriptionType}
+                {pricePoint.ident} - {pricePoint.type}
               </td>
               <td>
-                {pricePoint.introTotalPrice} {pricePoint.currencyCode}
+                {pricePoint.introTotalPrice}{" "}
+                {discount(
+                  pricePoint.introDiscountPrice,
+                  pricePoint.introDiscountPercentage,
+                )}{" "}
+                {pricePoint.currencyCode}
               </td>
               <td>
-                {pricePoint.subscriptionTotalPrice} {pricePoint.currencyCode}
+                {pricePoint.subscriptionTotalPrice}{" "}
+                {discount(
+                  pricePoint.subscriptionDiscountPrice,
+                  pricePoint.subscriptionDiscountPercentage,
+                )}{" "}
+                {pricePoint.currencyCode}
               </td>
               <td>
-                <button onClick={buy(pricePoint.sku)}>Buy</button>
+                <button onClick={buy(pricePoint.ident)}>Buy</button>
               </td>
             </tr>
           );
