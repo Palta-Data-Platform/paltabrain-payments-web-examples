@@ -22,7 +22,6 @@
         const settings = {
             apiEndpoint: 'http://localhost:8080',
             apiKey: 'public-key-13',
-            customerId: customerId,
             metadata: {
                 workflow: workflow ? workflow : "",
             },
@@ -33,10 +32,12 @@
         }
 
         const client = paltaBrainPayments.createPaymentClient(settings);
-        client.getPricePoints().then((pricePoints) => {
-            client.renderPaymentForm({
-                containerId: "#checkout-container",
-                sku: pricePoints[0].sku,
+        client.getPricePoints({ customerId: null }).then((pricePoints) => {
+            client.showPaymentForm({
+                containerId: "checkout-container",
+                ident: pricePoints[0].ident,
+                orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+                customerId: customerId,
             });
         })
     </script>
