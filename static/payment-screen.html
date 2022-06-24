@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pure html implementation</title>
-    <link href="https://unpkg.com/@primer-io/checkout-web@1.29.0/dist/Checkout.css" rel="stylesheet">
-    <script src="https://unpkg.com/@primer-io/checkout-web@1.29.0/dist/loader.js"></script>
+    <link rel="stylesheet" href="https://sdk.primer.io/web/v2.2.1/Checkout.css" />
+    <script src="https://sdk.primer.io/web/v2.2.1/Primer.min.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
 </head>
+
 <body>
     Payment Screen
     <br />
@@ -25,6 +27,10 @@
             metadata: {
                 workflow: workflow ? workflow : "",
             },
+            onError: (error, description) => {
+                console.log(description);
+                console.log(error);
+            }
         };
 
         if (window.location.hostname !== 'localhost') {
@@ -32,14 +38,28 @@
         }
 
         const client = paltaBrainPayments.createPaymentClient(settings);
-        client.getPricePoints({ customerId: null }).then((pricePoints) => {
+        client.getPricePoints({
+            customerId: null
+        }).then((pricePoints) => {
             client.showPaymentForm({
                 containerId: "checkout-container",
                 ident: pricePoints[0].ident,
+                countryCode: 'US',
                 orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
                 customerId: customerId,
+                customer: {
+                    emailAddress: 'testing@paltabrain.com',
+                    billingAddress: {
+                        addressLine1: 'Main St',
+                        addressLine2: '175',
+                        city: 'Montpelier',
+                        countryCode: 'US',
+                        postalCode: '05602',
+                    },
+                },
             });
         })
     </script>
 </body>
+
 </html>

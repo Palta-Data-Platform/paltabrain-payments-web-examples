@@ -28,6 +28,10 @@ export const PaymentScreen = (): ReactElement => {
       apiEndpoint: `${process.env.API_ENDPOINT}`,
       apiKey: `${process.env.API_KEY}`,
       metadata,
+      onError: (error: any, description: string) => { 
+        console.log(description);
+        console.log(error); 
+      }
     };
 
     const client: PaymentClient = createPaymentClient(settings);
@@ -45,8 +49,19 @@ export const PaymentScreen = (): ReactElement => {
       client?.showPaymentForm({
         containerId: "checkout-container",
         ident: sku,
+        countryCode: 'US',
         orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
         customerId: customerId,
+        customer: {
+          emailAddress: 'testing@paltabrain.com',
+          billingAddress: {
+            addressLine1: 'Main St',
+            addressLine2: '175',
+            city: 'Montpelier',
+            countryCode: 'US',
+            postalCode: '05602',
+          },
+        },
       });
     };
   };
