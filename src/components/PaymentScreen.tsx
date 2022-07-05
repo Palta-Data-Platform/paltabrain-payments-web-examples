@@ -28,10 +28,10 @@ export const PaymentScreen = (): ReactElement => {
       apiEndpoint: `${process.env.API_ENDPOINT}`,
       apiKey: `${process.env.API_KEY}`,
       metadata,
-      onError: (error: any, description: string) => { 
+      onError: (error: any, description: string) => {
         console.log(description);
-        console.log(error); 
-      }
+        console.log(error);
+      },
     };
 
     const client: PaymentClient = createPaymentClient(settings);
@@ -49,17 +49,17 @@ export const PaymentScreen = (): ReactElement => {
       client?.showPaymentForm({
         containerId: "checkout-container",
         ident: sku,
-        countryCode: 'US',
+        countryCode: "US",
         orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
         customerId: customerId,
         customer: {
-          emailAddress: 'testing@paltabrain.com',
+          emailAddress: "testing@paltabrain.com",
           billingAddress: {
-            addressLine1: 'Main St',
-            addressLine2: '175',
-            city: 'Montpelier',
-            countryCode: 'US',
-            postalCode: '05602',
+            addressLine1: "Main St",
+            addressLine2: "175",
+            city: "Montpelier",
+            countryCode: "US",
+            postalCode: "05602",
           },
         },
       });
@@ -80,39 +80,43 @@ export const PaymentScreen = (): ReactElement => {
     <>
       Payment Screen
       <table>
-        <tr>
-          <td>SKU</td>
-          <td>Intro price</td>
-          <td>Subscription price</td>
-        </tr>
-        {pricePoints.map(function (pricePoint, i) {
-          return (
-            <tr>
-              <td>
-                {pricePoint.ident} - {pricePoint.type}
-              </td>
-              <td>
-                {pricePoint.introTotalPrice}{" "}
-                {discount(
-                  pricePoint.introDiscountPrice,
-                  pricePoint.introDiscountPercentage,
-                )}{" "}
-                {pricePoint.currencyCode}
-              </td>
-              <td>
-                {pricePoint.subscriptionTotalPrice}{" "}
-                {discount(
-                  pricePoint.subscriptionDiscountPrice,
-                  pricePoint.subscriptionDiscountPercentage,
-                )}{" "}
-                {pricePoint.currencyCode}
-              </td>
-              <td>
-                <button onClick={buy(pricePoint.ident)}>Buy</button>
-              </td>
-            </tr>
-          );
-        })}
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Intro price</th>
+            <th>Subscription price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pricePoints.map(function (pricePoint, i) {
+            return (
+              <tr>
+                <td>
+                  {pricePoint.ident} - {pricePoint.type}
+                </td>
+                <td>
+                  {pricePoint.introTotalPrice}{" "}
+                  {discount(
+                    pricePoint.introDiscountPrice,
+                    pricePoint.introDiscountPercentage,
+                  )}{" "}
+                  {pricePoint.currencyCode}
+                </td>
+                <td>
+                  {pricePoint.subscriptionTotalPrice}{" "}
+                  {discount(
+                    pricePoint.subscriptionDiscountPrice,
+                    pricePoint.subscriptionDiscountPercentage,
+                  )}{" "}
+                  {pricePoint.currencyCode}
+                </td>
+                <td>
+                  <button onClick={buy(pricePoint.ident)}>Buy</button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
       <br />
       <div id={"checkout-container"}></div>
