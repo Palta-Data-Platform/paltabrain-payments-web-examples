@@ -22,7 +22,7 @@ module.exports = merge(commonConfig, {
       ],
     }),
     new webpack.DefinePlugin({
-      "process.env.API_ENDPOINT": '"https://payments.dev.paltabrain.com"',
+      "process.env.API_ENDPOINT": '"https://api.payments.dev.paltabrain.com"',
       "process.env.API_KEY": '"public-key-13"',
     }),
   ],
