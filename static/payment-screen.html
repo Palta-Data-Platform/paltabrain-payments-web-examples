@@ -35,6 +35,7 @@
 
         if (window.location.hostname !== 'localhost') {
             settings.apiEndpoint = 'https://api.payments.dev.paltabrain.com'
+            settings.apiKey = 'c5e8c9fdaa8748649837371f9547e84f'
         }
 
         const client = paltaBrainPayments.createPaymentClient(settings);
