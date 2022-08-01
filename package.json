@@ -73,8 +73,8 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@palta-brain/payments": "^0.0.29",
-        "@primer-io/checkout-web": "^2.2.1",
+        "@palta-brain/payments": "^0.1.0",
+        "@primer-io/checkout-web": "^2.3.0",
         "react-router-dom": "^6.3.0"
     }
 }
