@@ -73,7 +73,7 @@ export const PaymentScreen = (): ReactElement => {
           },
         },
         {
-          container: "checkout-container",
+          container: "#checkout-container",
           locale: "en-US",
           vault: { visible: false },
           paypal: {
