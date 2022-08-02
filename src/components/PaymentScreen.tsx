@@ -32,11 +32,12 @@ export const PaymentScreen = (): ReactElement => {
         console.log(description);
         console.log(error);
       },
+      onPaymentStatusChange: () => {},
     };
 
     const client: PaymentClient = createPaymentClient(settings);
     setClient(client);
-    const pricePoints = await client.getPricePoints({ customerId: null });
+    const pricePoints = await client.getPricePoints({ customerId: customerId });
     setPricePoints(pricePoints);
   };
 
