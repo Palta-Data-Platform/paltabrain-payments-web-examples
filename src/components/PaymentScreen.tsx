@@ -46,22 +46,35 @@ export const PaymentScreen = (): ReactElement => {
 
   const buy = (sku: string) => {
     return () => {
-      client?.showPaymentForm({
-        containerId: "checkout-container",
-        ident: sku,
-        countryCode: "US",
-        orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
-        customerId: customerId,
-        customer: {
-          emailAddress: "testing@paltabrain.com",
-          billingAddress: {
-            addressLine1: "Main St",
-            addressLine2: "175",
-            city: "Montpelier",
-            countryCode: "US",
-            postalCode: "05602",
+      client?.showPaymentForm(
+        {
+          ident: sku,
+          countryCode: "US",
+          platformCode: "dekstop_web",
+          orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+          customerId: customerId,
+          customer: {
+            emailAddress: "testing@paltabrain.com",
+            billingAddress: {
+              addressLine1: "Main St",
+              addressLine2: "175",
+              city: "Montpelier",
+              countryCode: "US",
+              postalCode: "05602",
+            },
           },
         },
+        {
+          container: "checkout-container",
+          locale: 'en-US',
+          vault: { visible: false },
+          paypal: {
+            buttonColor: 'black',
+            buttonShape: 'pill',
+            buttonSize: 'large',
+            buttonLabel: 'buynow',
+          },
+        }
       });
     };
   };
