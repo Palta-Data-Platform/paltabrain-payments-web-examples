@@ -32,12 +32,19 @@ export const PaymentScreen = (): ReactElement => {
         console.log(description);
         console.log(error);
       },
-      onPaymentStatusChange: () => {},
+      onPaymentStatusChange: (status: string) => {
+        console.log(status);
+      },
     };
 
     const client: PaymentClient = createPaymentClient(settings);
     setClient(client);
-    const pricePoints = await client.getPricePoints({ customerId: customerId });
+    const pricePoints = await client.getPricePoints({
+      customerId: customerId,
+      countryCode: "US",
+      platformCode: "dekstop_web",
+      requestContext: {},
+    });
     setPricePoints(pricePoints);
   };
 
