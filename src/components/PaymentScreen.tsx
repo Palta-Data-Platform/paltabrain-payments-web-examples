@@ -66,16 +66,16 @@ export const PaymentScreen = (): ReactElement => {
         },
         {
           container: "checkout-container",
-          locale: 'en-US',
+          locale: "en-US",
           vault: { visible: false },
           paypal: {
-            buttonColor: 'black',
-            buttonShape: 'pill',
-            buttonSize: 'large',
-            buttonLabel: 'buynow',
+            buttonColor: "black",
+            buttonShape: "pill",
+            buttonSize: "large",
+            buttonLabel: "buynow",
           },
-        }
-      });
+        },
+      );
     };
   };
 
