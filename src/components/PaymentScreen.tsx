@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ReactElement, useEffect, useState } from "react";
 import "@primer-io/checkout-web/dist/Checkout.css";
+import { v4 as uuidv4 } from 'uuid';
 import {
   createPaymentClient,
   PaymentClient,
@@ -9,7 +10,7 @@ import {
 
 const customerId = {
   type: "merchant-uuid",
-  value: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  value: uuidv4(),
 };
 
 export const PaymentScreen = (): ReactElement => {
@@ -42,7 +43,7 @@ export const PaymentScreen = (): ReactElement => {
     const pricePoints = await client.getPricePoints({
       customerId: customerId,
       countryCode: "US",
-      platformCode: "dekstop_web",
+      platformCode: "desktop_web",
       requestContext: {},
     });
     setPricePoints(pricePoints);
@@ -58,8 +59,8 @@ export const PaymentScreen = (): ReactElement => {
         {
           ident: sku,
           countryCode: "US",
-          platformCode: "dekstop_web",
-          orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+          platformCode: "desktop_web",
+          orderId: uuidv4(),
           customerId: customerId,
           customer: {
             emailAddress: "testing@paltabrain.com",

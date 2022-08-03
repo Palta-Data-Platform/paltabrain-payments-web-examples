@@ -42,14 +42,14 @@
         client.getPricePoints({
             customerId: null,
             countryCode: "US",
-            platformCode: "dekstop_web",
+            platformCode: "desktop_web",
             requestContext: {},
         }).then((pricePoints) => {
             client.showPaymentForm(
               {
                   ident: pricePoints[0].ident,
                   countryCode: "US",
-                  platformCode: "dekstop_web",
+                  platformCode: "desktop_web",
                   orderId: "3fa85f64-5717-4562-b3fc-2c963f66afa1",
                   customerId: customerId,
                   customer: {
