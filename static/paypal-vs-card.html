@@ -26,7 +26,7 @@
             );
         }
 
-        function showForm(ident) {
+        function showForm(client, ident) {
             client.showPaymentForm(
               {
                   ident: ident,
@@ -98,11 +98,11 @@
                     platformCode: "desktop_web",
                     requestContext: {},
                 }).then((pricePoints) => {
-                    showForm(pricePoints[0].ident)
+                    showForm(client, pricePoints[0].ident)
                 })
             }
             else {
-                showForm(pricePointIdent)
+                showForm(client, pricePointIdent)
             }
         })
 
@@ -116,11 +116,11 @@
                     platformCode: "desktop_web",
                     requestContext: {},
                 }).then((pricePoints) => {
-                    showForm(pricePoints[0].ident)
+                    showForm(client, pricePoints[0].ident)
                 })
             }
             else {
-                showForm(pricePointIdent)
+                showForm(client, pricePointIdent)
             }
         })
 
