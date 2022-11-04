@@ -24,8 +24,8 @@
         const apiKey = params.get('api_key');
         const apiEndPoint = params.get('api_end_point');
         const settings = {
-            apiEndpoint: apiEndPoint == null ? apiEndPoint : 'http://localhost:8080',
-            apiKey: apiKey == null ? apiKey : 'public-key-13',
+            apiEndpoint: apiEndPoint != null ? apiEndPoint : 'http://localhost:8080',
+            apiKey: apiKey != null ? apiKey : 'public-key-13',
             metadata: {
                 workflow: workflow ? workflow : "",
             },
@@ -36,8 +36,8 @@
         };
 
         if (window.location.hostname !== 'localhost') {
-            settings.apiEndpoint =  apiEndPoint == null ? apiEndPoint : 'https://api.payments.paltabrain.com'
-            settings.apiKey = apiKey == null ? apiKey : 'a87f9d0ef2d341ea931d0ca626193e34'
+            settings.apiEndpoint =  apiEndPoint != null ? apiEndPoint : 'https://api.payments.paltabrain.com'
+            settings.apiKey = apiKey != null ? apiKey : 'a87f9d0ef2d341ea931d0ca626193e34'
         }
 
         const client = paltaBrainPayments.createPaymentClient(settings);
