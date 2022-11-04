@@ -40,11 +40,15 @@ export const PaymentScreen = (): ReactElement => {
 
     const client: PaymentClient = createPaymentClient(settings);
     setClient(client);
+
     const pricePoints = await client.getPricePoints({
       customerId: customerId,
+      availability_rules: null,
+      ident: null,
+      status: null,
       countryCode: "US",
       platformCode: "desktop_web",
-      requestContext: {},
+      requestContext: null,
     });
     setPricePoints(pricePoints);
   };
