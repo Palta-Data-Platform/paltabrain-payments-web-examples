@@ -28,7 +28,7 @@
         }
 
         function showForm(ident) {
-            client.showPaymentForm(
+            return client.showPaymentForm(
               {
                   ident: ident,
                   countryCode: "US",
@@ -61,7 +61,7 @@
                       onVisible(isVisible, context) {
                           // Show or hide your custom submit button
                           console.log(['onVisible', isVisible, context])
-                          payButton.parentNode.style.display = isVisible ? 'block': 'none';
+                          payButton.parentNode.style.display = isVisible ? 'block' : 'none';
                       },
 
                       // Callback for receiving the submit button's disabled state in the current scene
@@ -108,6 +108,7 @@
         settings.apiKey = 'a87f9d0ef2d341ea931d0ca626193e34'
 
         const client = paltaBrainPayments.createPaymentClient(settings);
+        let checkoutForm = null;
         if (pricePointIdent == null) {
             client.getPricePoints({
                 customerId: null,
@@ -115,15 +116,15 @@
                 platformCode: "desktop_web",
                 requestContext: {},
             }).then((pricePoints) => {
-                showForm(pricePoints[0].ident)
+                checkoutForm = showForm(pricePoints[0].ident)
             })
         }
         else {
-            showForm(pricePointIdent)
+            checkoutForm = showForm(pricePointIdent)
         }
 
         payButton.addEventListener("click", () => {
-            client.submit();
+            checkoutForm.submit();
         })
     </script>
 </body>
