@@ -108,7 +108,6 @@
         settings.apiKey = 'a87f9d0ef2d341ea931d0ca626193e34'
 
         const client = paltaBrainPayments.createPaymentClient(settings);
-        let checkoutForm = null;
         if (pricePointIdent == null) {
             client.getPricePoints({
                 customerId: null,
@@ -116,16 +115,20 @@
                 platformCode: "desktop_web",
                 requestContext: {},
             }).then((pricePoints) => {
-                checkoutForm = showForm(pricePoints[0].ident)
+                showForm(pricePoints[0].ident).then(checkoutForm => {
+                    payButton.addEventListener("click", () => {
+                        checkoutForm.submit();
+                    })
+                })
             })
         }
         else {
-            checkoutForm = showForm(pricePointIdent)
+            showForm(pricePointIdent).then(checkoutForm => {
+                payButton.addEventListener("click", () => {
+                    checkoutForm.submit();
+                })
+            })
         }
-
-        payButton.addEventListener("click", () => {
-            checkoutForm.submit();
-        })
     </script>
 </body>
 
