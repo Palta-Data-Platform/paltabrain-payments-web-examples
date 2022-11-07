@@ -90,6 +90,7 @@
         const settings = {
             apiEndpoint: apiEndPoint != null ? apiEndPoint : 'http://localhost:8080',
             apiKey: apiKey != null ? apiKey : 'public-key-13',
+            metadata: {},
             onError: (error, description) => {
                 console.log(description);
                 console.log(error);
