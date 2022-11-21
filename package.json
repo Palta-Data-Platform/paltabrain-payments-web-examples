@@ -74,8 +74,8 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@palta-brain/payments": "^0.3.3",
-        "@primer-io/checkout-web": "^2.3.0",
+        "@palta-brain/payments": "^0.3.6",
+        "@primer-io/checkout-web": "^2.19.1",
         "react-router-dom": "^6.3.0",
         "uuid": "^8.3.2"
     }
