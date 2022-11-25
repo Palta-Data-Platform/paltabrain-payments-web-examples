@@ -20,68 +20,69 @@
 
         // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
         function uuidv4() {
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             );
         }
 
         function showForm(ident) {
-            return client.showPaymentForm(
-              {
-                  ident: ident,
-                  countryCode: "US",
-                  platformCode: "desktop_web",
-                  orderId: uuidv4(),
-                  customerId: customerId,
-                  customer: {
-                      emailAddress: "testing@paltabrain.com",
-                      billingAddress: {
-                          addressLine1: "Main St",
-                          addressLine2: "175",
-                          city: "Montpelier",
-                          countryCode: "US",
-                          postalCode: "05602",
-                      },
-                  },
-              },
-              {
-                  container: "#checkout-container",
-                  locale: "en-US",
-                  vault: { visible: false },
-                  paypal: {
-                      buttonColor: "black",
-                      buttonShape: "pill",
-                      buttonSize: "large",
-                      buttonLabel: "buynow",
-                  },
-                  submitButton: {
-                      useBuiltInButton: false,
-                      onVisible(isVisible, context) {
-                          // Show or hide your custom submit button
-                          console.log(['onVisible', isVisible, context])
-                          payButton.parentNode.style.display = isVisible ? 'block' : 'none';
-                      },
+            return client.showPaymentForm({
+                ident: ident,
+                countryCode: "US",
+                platformCode: "desktop_web",
+                orderId: uuidv4(),
+                customerId: customerId,
+                customer: {
+                    emailAddress: "testing@paltabrain.com",
+                    billingAddress: {
+                        addressLine1: "Main St",
+                        addressLine2: "175",
+                        city: "Montpelier",
+                        countryCode: "US",
+                        postalCode: "05602",
+                    },
+                },
+            }, {
+                container: "#checkout-container",
+                locale: "en-US",
+                vault: {
+                    visible: false
+                },
+                paypal: {
+                    buttonColor: "black",
+                    buttonShape: "pill",
+                    buttonSize: "large",
+                    buttonLabel: "buynow",
+                    paymentFlow: 'PREFER_VAULT',
+                },
+                submitButton: {
+                    useBuiltInButton: false,
+                    onVisible(isVisible, context) {
+                        // Show or hide your custom submit button
+                        console.log(['onVisible', isVisible, context])
+                        payButton.parentNode.style.display = isVisible ? 'block' : 'none';
+                    },
 
-                      // Callback for receiving the submit button's disabled state in the current scene
-                      onDisable(isDisabled, context) {
-                          // Disable or enable your custom submit button
-                          console.log(['onDisable', isDisabled, context])
-                          payButton.disabled = isDisabled
-                      },
+                    // Callback for receiving the submit button's disabled state in the current scene
+                    onDisable(isDisabled, context) {
+                        // Disable or enable your custom submit button
+                        console.log(['onDisable', isDisabled, context])
+                        payButton.disabled = isDisabled
+                    },
 
-                      // Callback for receiving the submit button's loading state in the current scene
-                      onLoading(isLoading, context) {
-                          // Show your submit button in a loading state
-                          console.log(['onLoading', isLoading, context])
-                      },
+                    // Callback for receiving the submit button's loading state in the current scene
+                    onLoading(isLoading, context) {
+                        // Show your submit button in a loading state
+                        console.log(['onLoading', isLoading, context])
+                    },
 
-                      // Callback for receiving the submit button's content in the current scene
-                      onContentChange(content) {
-                          // Set your submit button's content with either the content provided or your own custom content
-                          console.log(['onContentChange', content])
-                      },
-                  }
-              });
+                    // Callback for receiving the submit button's content in the current scene
+                    onContentChange(content) {
+                        // Set your submit button's content with either the content provided or your own custom content
+                        console.log(['onContentChange', content])
+                    },
+                }
+            });
         }
 
         const params = new URLSearchParams(window ? window.location.search : {});
@@ -119,8 +120,7 @@
                     })
                 })
             })
-        }
-        else {
+        } else {
             showForm(pricePointIdent).then(checkoutForm => {
                 payButton.addEventListener("click", () => {
                     checkoutForm.submit();

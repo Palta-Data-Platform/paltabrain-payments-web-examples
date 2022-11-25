@@ -86,6 +86,7 @@ export const PaymentScreen = (): ReactElement => {
             buttonShape: "pill",
             buttonSize: "large",
             buttonLabel: "buynow",
+            paymentFlow: 'PREFER_VAULT',
           },
         },
       );
