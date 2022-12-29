@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from 'react';
 import "@primer-io/checkout-web/dist/Checkout.css";
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -14,7 +14,9 @@ const customerId = {
 };
 
 export const PaymentScreen = (): ReactElement => {
+  const promoBox = useRef(null);
   const [pricePoints, setPricePoints] = useState<PricePoint[]>([]);
+  const [promo, setPromo] = useState<string>("");
   const [client, setClient] = useState<null | PaymentClient>(null);
 
   const loadCheckout = async () => {
@@ -41,21 +43,31 @@ export const PaymentScreen = (): ReactElement => {
     const client: PaymentClient = createPaymentClient(settings);
     setClient(client);
 
-    const pricePoints = await client.getPricePoints({
+    const request = {
       customerId: customerId,
-      availability_rules: null,
+      availability_rules: false,
       ident: null,
       status: null,
       countryCode: "US",
       platformCode: "desktop_web",
       requestContext: null,
-    });
+    };
+    if (promo) {
+      request.availability_rules = true;
+      request.requestContext = {"promo": promo};
+    }
+
+    const pricePoints = await client.getPricePoints(request);
     setPricePoints(pricePoints);
   };
 
   useEffect(() => {
     loadCheckout().then(() => {});
-  }, []);
+  }, [promo]);
+
+  const applyPromo = () => {
+    setPromo(promoBox.current.value)
+  }
 
   const buy = (sku: string) => {
     return () => {
@@ -112,6 +124,7 @@ export const PaymentScreen = (): ReactElement => {
             <th>SKU</th>
             <th>Intro price</th>
             <th>Subscription price</th>
+            <th>Is promo?</th>
           </tr>
         </thead>
         <tbody>
@@ -138,6 +151,9 @@ export const PaymentScreen = (): ReactElement => {
                   {pricePoint.currencyCode}
                 </td>
                 <td>
+                  {pricePoint.parameters?.is_promo ? "true" : ""}
+                </td>
+                <td>
                   <button onClick={buy(pricePoint.ident)}>Buy</button>
                 </td>
               </tr>
@@ -145,6 +161,9 @@ export const PaymentScreen = (): ReactElement => {
           })}
         </tbody>
       </table>
+      <br />
+      <input ref={promoBox} type={"text"} />&nbsp;
+      <button onClick={applyPromo}>Apply promo</button>
       <br />
       <div id={"checkout-container"}></div>
     </>
