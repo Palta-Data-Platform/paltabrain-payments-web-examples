@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Pure html implementation</title>
+    <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
+</head>
+
+<body>
+    Payment Screen
+    <br />
+    <div id="checkout-container"></div>
+    <script>
+        // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
+        function uuidv4() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        }
+
+        function showForm(ident) {
+            client.showPaymentForm({
+                ident: ident,
+                countryCode: "US",
+                platformCode: "desktop_web",
+                orderId: uuidv4(),
+                customerId: customerId,
+                customer: {
+                    emailAddress: "testing@paltabrain.com",
+                    billingAddress: {
+                        addressLine1: "Main St",
+                        addressLine2: "175",
+                        city: "Montpelier",
+                        countryCode: "US",
+                        postalCode: "05602",
+                    },
+                },
+            }, {
+                container: "#checkout-container",
+                locale: "en-US",
+                vault: {
+                    visible: false
+                },
+                paypal: {
+                    buttonColor: "black",
+                    buttonShape: "pill",
+                    buttonSize: "large",
+                    buttonLabel: "buynow",
+                    paymentFlow: 'PREFER_VAULT',
+                },
+            });
+        }
+
+        const params = new URLSearchParams(window ? window.location.search : {});
+        const customerIdValue = params.get('customer_id');
+        const customerId = {
+            type: "merchant-uuid",
+            value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        };
+        const settings = {
+            apiEndpoint: 'https://api.payments.paltabrain.com',
+            apiKey: 'acc078a2a51543ce9188b5c7e8fad1da',
+            metadata: {
+                paypal: 1,
+                card: 1
+            },
+            onError: (error, description) => {
+                console.log(description);
+                console.log(error);
+            }
+        };
+
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        client.getPricePoints({
+            customerId: null,
+            countryCode: "US",
+            platformCode: "desktop_web",
+            requestContext: {},
+        }).then((pricePoints) => {
+            showForm(pricePoints[0].ident)
+        })
+    </script>
+</body>
+
+</html>
