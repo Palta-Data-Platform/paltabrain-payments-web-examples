@@ -62,7 +62,7 @@
         const customerIdValue = params.get('customer_id');
         const customerId = {
             type: "merchant-uuid",
-            value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            value: customerIdValue != null ? customerIdValue : uuidv4(),
         };
         const settings = {
             apiEndpoint: 'https://api.payments.paltabrain.com',
