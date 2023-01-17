@@ -23,14 +23,17 @@
         }
 
         function showForm(ident) {
+            var orderId = uuidv4();
+            var email = "testing@paltabrain.com";
+            document.getElementById('log').innerHTML += `oderId: ${orderId}<br />email: ${email}<br />`
             client.showPaymentForm({
                 ident: ident,
                 countryCode: "US",
                 platformCode: "desktop_web",
-                orderId: uuidv4(),
+                orderId: orderId,
                 customerId: customerId,
                 customer: {
-                    emailAddress: "testing@paltabrain.com",
+                    emailAddress: email,
                     billingAddress: {
                         addressLine1: "Main St",
                         addressLine2: "175",
@@ -81,7 +84,7 @@
             platformCode: "desktop_web",
             requestContext: {},
         }).then((pricePoints) => {
-            document.getElementById('log').innerHTML = `Price point id: ${ricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}`
+            document.getElementById('log').innerHTML = `Price point id: ${ricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}<br />`
             showForm(pricePoints[0].ident)
         })
     </script>
