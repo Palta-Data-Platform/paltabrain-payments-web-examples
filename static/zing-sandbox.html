@@ -11,6 +11,8 @@
 <body>
     Payment Screen
     <br />
+    <div id="log"></div>
+    <br />
     <div id="checkout-container"></div>
     <script>
         // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
@@ -79,6 +81,7 @@
             platformCode: "desktop_web",
             requestContext: {},
         }).then((pricePoints) => {
+            document.getElementById('log').innerHTML = `Price point id: ${ricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}`
             showForm(pricePoints[0].ident)
         })
     </script>
