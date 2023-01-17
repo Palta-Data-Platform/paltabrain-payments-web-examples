@@ -84,7 +84,7 @@
             platformCode: "desktop_web",
             requestContext: {},
         }).then((pricePoints) => {
-            document.getElementById('log').innerHTML = `Price point id: ${ricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}<br />`
+            document.getElementById('log').innerHTML = `Price point id: ${pricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}<br />`
             showForm(pricePoints[0].ident)
         })
     </script>
