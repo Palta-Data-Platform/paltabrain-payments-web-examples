@@ -21,7 +21,6 @@ export const PreLoad = (): ReactElement => {
   const [step, setStep] = useState<number>(0);
   const payments = useRef(null);
   const [clientCard, setClientCard] = useState<null | PaymentClient>(null);
-  const [clientPayPal, setClientPayPal] = useState<null | PaymentClient>(null);
 
   const createClient = async (setClient, metadata, id) => {
     const settings = {
@@ -70,18 +69,14 @@ export const PreLoad = (): ReactElement => {
           buttonSize: "large",
           buttonLabel: "buynow",
           paymentFlow: "PREFER_VAULT",
+          container: "#checkout-container-paypal",
         },
       },
     );
   };
 
   const loadCheckout = async () => {
-    await createClient(setClientCard, { card: 1 }, "#checkout-container-card");
-    await createClient(
-      setClientPayPal,
-      { paypal: 1 },
-      "#checkout-container-paypal",
-    );
+    await createClient(setClientCard, { card: 1, paypal: 1 }, "#checkout-container-card");
   };
 
   useEffect(() => {
