@@ -147,7 +147,7 @@ export const PreLoad = (): ReactElement => {
       <div style={{ display: "none" }} ref={payments}>
         <h2 style={{ display: "inline" }}>Payment method:</h2>
         <select
-          style={{ height: "50px", width: "150px", marginBottom: "50px" }}
+          style={{ height: "50px", width: "150px", marginBottom: "55px" }}
           onChange={changeVisibility}
         >
           <option value={"checkout-container-card"}>Card</option>
