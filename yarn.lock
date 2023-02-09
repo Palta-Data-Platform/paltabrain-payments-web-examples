@@ -1513,17 +1513,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@palta-brain/payments@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.3.6.tgz#9738353a36a2f92f18cf5694559e6e28305eb209"
-  integrity sha512-nZmUAeKWwRV9V4WMfa0w3+kX+8vNZ6eFdaETX2/QqsDRlA7tq3ehm2bkb1rzkXkzsZGkha9sLQmpVvgHI9SjFQ==
+"@palta-brain/payments@^0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.3.9.tgz#aa8b29b9a45ad34ec90f19a435c26f32067ff476"
+  integrity sha512-29d4Vc/K4BnXpoY8H/5filoxw+8GEaUT5ZHoW7Hk6ZZbqfCVhTAQZ5ISa/Q4aRUVwpLKMYanQ9LtE/B6JHYMPg==
   dependencies:
-    "@primer-io/checkout-web" "^2.19.1"
+    "@primer-io/checkout-web" "^2.21.0"
 
-"@primer-io/checkout-web@^2.19.1":
-  version "2.19.1"
-  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.19.1.tgz#c3034ba153b98ac60e3254e76062f10a331c4870"
-  integrity sha512-h+ko3w227Ic/I41LT95sSDzkwRU0iTAIXuaDGz+lGuOolRzmN8AX8LzEhPNXbTTI62yfy3aCN2LYoiKebPcSdg==
+"@primer-io/checkout-web@^2.19.1", "@primer-io/checkout-web@^2.21.0":
+  version "2.26.1"
+  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.26.1.tgz#cc735a18c02f37eec89edc83b9cef50b4ad0a647"
+  integrity sha512-K8BmpmbG5nLm8dMNdOrdN+G4vQkUSKWXzAADrVhUnZUgjxnZ5AtEgcRVTw5eunT9du2XN3DmcEbcjqQCQbZuIw==
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
