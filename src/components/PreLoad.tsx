@@ -18,7 +18,7 @@ const customerId = {
 const ident = "pora_premium_1m_9_99_usd";
 
 export const PreLoad = (): ReactElement => {
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(0);
   const payments = useRef(null);
   const [clientCard, setClientCard] = useState<null | PaymentClient>(null);
   const [clientPayPal, setClientPayPal] = useState<null | PaymentClient>(null);
@@ -147,7 +147,7 @@ export const PreLoad = (): ReactElement => {
       <div style={{ display: "none" }} ref={payments}>
         <h2 style={{ display: "inline" }}>Payment method:</h2>
         <select
-          style={{ height: "50px", width: "150px", marginBottom: "20px" }}
+          style={{ height: "50px", width: "150px", marginBottom: "50px" }}
           onChange={changeVisibility}
         >
           <option value={"checkout-container-card"}>Card</option>
