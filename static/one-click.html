@@ -37,6 +37,9 @@ Payment Screen
 
 <article>
     <h2> Step 0. Fill up the parameters </h2>
+    <label for="payment_type">Payment Type:</label>
+    <input type="text" id="payment_type">
+    <br/>
     <label for="order_id">Order Id</label>
     <input type="text" id="order_id">
     <br/>
@@ -55,7 +58,6 @@ Payment Screen
 </article>
 
 
-
 <article class="payment-buttons">
     <h2> Step 1. Pay to vault a card </h2>
     <button id="paypal-button">Paypal</button>
@@ -66,6 +68,7 @@ Payment Screen
 <article class="payment-one-click">
     <h2> Step 2. Make a one-click payment </h2>
     <button id="one-click-button">One Click Payment</button>
+    <div id="one-click-result"></div>
 </article>
 
 <script>
@@ -76,6 +79,7 @@ Payment Screen
     }
 
     function setDefaults() {
+        document.getElementById("payment_type").value = "SUBSCRIPTION";
         document.getElementById("order_id").value = uuid4();
         document.getElementById("customer_id").value = uuid4();
         document.getElementById("api_endpoint").value = "https://api.payments.dev.paltabrain.com";
@@ -104,7 +108,7 @@ Payment Screen
             }
         };
 
-        return [settings, ident, customerId]
+        return [settings, ident, customerId, apiKey, apiEndPoint]
     }
 
 </script>
@@ -148,22 +152,19 @@ Payment Screen
         });
     }
 
-
-
-
     const paypalButtonElement = document.getElementById("paypal-button");
     const cardButtonElement = document.getElementById("card-button");
     const oneclickButtonElement = document.getElementById("one-click-button");
 
     paypalButtonElement.addEventListener("click", () => {
-        const [settings, ident, customerId] = getFormValues()
+        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
         settings.metadata['paypal'] = 1
         const client = paltaBrainPayments.createPaymentClient(settings);
         showForm(client, ident, customerId)
     })
 
     cardButtonElement.addEventListener("click", () => {
-        const [settings, ident, customerId] = getFormValues()
+        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
         settings.metadata['card'] = 1
         console.log(settings, ident, customerId)
         const client = paltaBrainPayments.createPaymentClient(settings);
@@ -171,8 +172,35 @@ Payment Screen
     })
 
     oneclickButtonElement.addEventListener("click", () => {
-        settings.metadata['oneclick'] = 1
-        // todo send payment to backend
+        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
+        const resultElement = document.getElementById('one-click-result');
+        const paymentType = document.getElementById("payment_type").value
+        resultElement.textContent = '...loading...';
+
+        const url = apiEndPoint + '/primer/purchase';
+        const data = {
+            "customerId": {
+                "type": "merchant-uuid",
+                "value": customerId
+            },
+            "ident": ident,
+            "paymentType": paymentType
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'x-api-key': apiKey,
+                'x-paltabrain-trace-id': uuid4(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                resultElement.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => resultElement.textContent = error);
     })
 </script>
 </body>
