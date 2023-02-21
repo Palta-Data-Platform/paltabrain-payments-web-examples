@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>One-click payment</title>
+    <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main > article {
+            margin: 10px 0;
+        }
+
+        .payment-buttons > button {
+            margin-right: 10px;
+        }
+
+        #checkout-container {
+            width: 500px;
+        }
+
+        input {
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+Payment Screen
+<br/>
+
+
+<article>
+    <h2> Step 0. Fill up the parameters </h2>
+    <label for="order_id">Order Id</label>
+    <input type="text" id="order_id">
+    <br/>
+    <label for="customer_id">Customer Id</label>
+    <input type="text" id="customer_id">
+    <br/>
+    <label for="api_endpoint">Api Endpoint</label>
+    <input type="text" id="api_endpoint">
+    <br/>
+    <label for="api_key">Api Key:</label>
+    <input type="text" id="api_key">
+    <br/>
+    <label for="ident">Ident:</label>
+    <input type="text" id="ident">
+    <br/>
+</article>
+
+
+
+<article class="payment-buttons">
+    <h2> Step 1. Pay to vault a card </h2>
+    <button id="paypal-button">Paypal</button>
+    <button id="card-button">Card</button>
+    <div id="checkout-container"></div>
+</article>
+
+<article class="payment-one-click">
+    <h2> Step 2. Make a one-click payment </h2>
+    <button id="one-click-button">One Click Payment</button>
+</article>
+
+<script>
+    function uuid4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
+    function setDefaults() {
+        document.getElementById("order_id").value = uuid4();
+        document.getElementById("customer_id").value = uuid4();
+        document.getElementById("api_endpoint").value = "https://api.payments.dev.paltabrain.com";
+        document.getElementById("api_key").value = "my_secret_api_key";
+        document.getElementById("ident").value = "ident-price-point";
+    }
+
+    setDefaults();
+
+</script>
+
+<script>
+    function getFormValues() {
+        const apiEndPoint = document.getElementById("api_endpoint").value
+        const ident = document.getElementById("ident").value
+        const customerId = document.getElementById("customer_id").value
+        const apiKey = document.getElementById("api_key").value
+
+        const settings = {
+            apiEndpoint: apiEndPoint,
+            apiKey: apiKey,
+            metadata: {},
+            onError: (error, description) => {
+                console.log(description);
+                console.log(error);
+            }
+        };
+
+        return [settings, ident, customerId]
+    }
+
+</script>
+
+
+<script type="text/javascript">
+
+    function showForm(client, ident, customerId) {
+        client.showPaymentForm({
+            ident: ident,
+            countryCode: "US",
+            platformCode: "desktop_web",
+            orderId: uuid4(),
+            customerId: {
+                type: "merchant-uuid",
+                value: customerId,
+            },
+            customer: {
+                emailAddress: "testing@paltabrain.com",
+                billingAddress: {
+                    addressLine1: "Main St",
+                    addressLine2: "175",
+                    city: "Montpelier",
+                    countryCode: "US",
+                    postalCode: "05602",
+                },
+            },
+        }, {
+            container: "#checkout-container",
+            locale: "en-US",
+            vault: {
+                visible: false
+            },
+            paypal: {
+                buttonColor: "black",
+                buttonShape: "pill",
+                buttonSize: "large",
+                buttonLabel: "buynow",
+                paymentFlow: 'PREFER_VAULT',
+            },
+        });
+    }
+
+
+
+
+    const paypalButtonElement = document.getElementById("paypal-button");
+    const cardButtonElement = document.getElementById("card-button");
+    const oneclickButtonElement = document.getElementById("one-click-button");
+
+    paypalButtonElement.addEventListener("click", () => {
+        const [settings, ident, customerId] = getFormValues()
+        settings.metadata['paypal'] = 1
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        showForm(client, ident, customerId)
+    })
+
+    cardButtonElement.addEventListener("click", () => {
+        const [settings, ident, customerId] = getFormValues()
+        settings.metadata['card'] = 1
+        console.log(settings, ident, customerId)
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        showForm(client, ident, customerId)
+    })
+
+    oneclickButtonElement.addEventListener("click", () => {
+        settings.metadata['oneclick'] = 1
+        // todo send payment to backend
+    })
+</script>
+</body>
+
+</html>
