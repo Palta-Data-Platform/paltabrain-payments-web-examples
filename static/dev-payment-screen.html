@@ -27,7 +27,7 @@
                 ident: ident,
                 countryCode: "US",
                 platformCode: "desktop_web",
-                orderId: uuidv4(),
+                orderId: orderId != null ? orderId: uuidv4(),
                 customerId: customerId,
                 customer: {
                     emailAddress: "testing@paltabrain.com",
@@ -61,6 +61,7 @@
         const apiEndPoint = params.get('api_end_point');
         const pricePointIdent = params.get('price_point_ident');
         const customerIdValue = params.get('customer_id');
+        const orderId = params.get('order_id')
         const customerId = {
             type: "merchant-uuid",
             value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
