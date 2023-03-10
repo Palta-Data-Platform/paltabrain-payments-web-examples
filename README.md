@@ -7,3 +7,4 @@
 5. Custom submit button - [custom-submit-button.html](static/custom-submit-button.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/custom-submit-button.html)
 6. Pure HTML example PayPal vs Card immediate load - [paypal-card-from-metadata.html](static/paypal-card-from-metadata.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/paypal-card-from-metadata.html)
 7. One-click demo payment - [one-click.html](static/one-click.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/one-click.html)
+8. Custom styles - [styles.html](static/styles.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/styles.html)
