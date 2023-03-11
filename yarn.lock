@@ -1520,10 +1520,15 @@
   dependencies:
     "@primer-io/checkout-web" "^2.21.0"
 
-"@primer-io/checkout-web@^2.21.0", "@primer-io/checkout-web@^2.26.1":
+"@primer-io/checkout-web@^2.21.0":
   version "2.26.1"
   resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.26.1.tgz#cc735a18c02f37eec89edc83b9cef50b4ad0a647"
   integrity sha512-K8BmpmbG5nLm8dMNdOrdN+G4vQkUSKWXzAADrVhUnZUgjxnZ5AtEgcRVTw5eunT9du2XN3DmcEbcjqQCQbZuIw==
+
+"@primer-io/checkout-web@^2.27.0":
+  version "2.27.1"
+  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.27.1.tgz#fa61de72849fd7839a8f533ae9e107d84622415d"
+  integrity sha512-lXOyiiADxBNwtv0oGVccXn1tQg5yZuglxb+Jp12qOezVBiGHa245yKkJ1+HezdQp4BIOpjtFAHhjI22cMBg2Ww==
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
