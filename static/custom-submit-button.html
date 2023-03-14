@@ -2,132 +2,134 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pure html implementation</title>
     <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
+    <link rel="stylesheet" href="https://sdk.primer.io/web/v2.27.1/Checkout.css"/>
+    <script src="https://sdk.primer.io/web/v2.27.1/Primer.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    Payment Screen
-    <br />
-    <div id="checkout-container"></div>
-    <div id="button" style="display:none;">
-        <button id="pay-button">Buy from palta brain</button>
-    </div>
-    <script>
-        const payButton = document.getElementById("pay-button");
+Payment Screen
+<br/>
+<div id="checkout-container"></div>
+<div id="button" style="display:none;">
+    <button id="pay-button">Buy from palta brain</button>
+</div>
+<script>
+    const payButton = document.getElementById("pay-button");
 
-        // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
-        function uuidv4() {
-            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-        }
+    // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
+    function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
 
-        function showForm(ident) {
-            return client.showPaymentForm({
-                ident: ident,
-                countryCode: "US",
-                platformCode: "desktop_web",
-                orderId: uuidv4(),
-                customerId: customerId,
-                customer: {
-                    emailAddress: "testing@paltabrain.com",
-                    billingAddress: {
-                        addressLine1: "Main St",
-                        addressLine2: "175",
-                        city: "Montpelier",
-                        countryCode: "US",
-                        postalCode: "05602",
-                    },
+    function showForm(ident) {
+        return client.showPaymentForm({
+            ident: ident,
+            countryCode: "US",
+            platformCode: "desktop_web",
+            orderId: uuidv4(),
+            customerId: customerId,
+            customer: {
+                emailAddress: "testing@paltabrain.com",
+                billingAddress: {
+                    addressLine1: "Main St",
+                    addressLine2: "175",
+                    city: "Montpelier",
+                    countryCode: "US",
+                    postalCode: "05602",
                 },
-            }, {
-                container: "#checkout-container",
-                locale: "en-US",
-                vault: {
-                    visible: false
-                },
-                paypal: {
-                    buttonColor: "black",
-                    buttonShape: "pill",
-                    buttonSize: "large",
-                    buttonLabel: "buynow",
-                    paymentFlow: 'PREFER_VAULT',
-                },
-                submitButton: {
-                    useBuiltInButton: false,
-                    onVisible(isVisible, context) {
-                        // Show or hide your custom submit button
-                        console.log(['onVisible', isVisible, context])
-                        payButton.parentNode.style.display = isVisible ? 'block' : 'none';
-                    },
-
-                    // Callback for receiving the submit button's disabled state in the current scene
-                    onDisable(isDisabled, context) {
-                        // Disable or enable your custom submit button
-                        console.log(['onDisable', isDisabled, context])
-                        payButton.disabled = isDisabled
-                    },
-
-                    // Callback for receiving the submit button's loading state in the current scene
-                    onLoading(isLoading, context) {
-                        // Show your submit button in a loading state
-                        console.log(['onLoading', isLoading, context])
-                    },
-
-                    // Callback for receiving the submit button's content in the current scene
-                    onContentChange(content) {
-                        // Set your submit button's content with either the content provided or your own custom content
-                        console.log(['onContentChange', content])
-                    },
-                }
-            });
-        }
-
-        const params = new URLSearchParams(window ? window.location.search : {});
-        const workflow = params.get('workflow');
-        const pricePointIdent = params.get('price_point_ident');
-        const customerIdValue = params.get('customer_id');
-        const customerId = {
-            type: "merchant-uuid",
-            value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        };
-        const settings = {
-            metadata: {
-                workflow: workflow ? workflow : "",
             },
-            onError: (error, description) => {
-                console.log(description);
-                console.log(error);
+        }, {
+            container: "#checkout-container",
+            locale: "en-US",
+            vault: {
+                visible: false
+            },
+            paypal: {
+                buttonColor: "black",
+                buttonShape: "pill",
+                buttonSize: "large",
+                buttonLabel: "buynow",
+                paymentFlow: 'PREFER_VAULT',
+            },
+            submitButton: {
+                useBuiltInButton: false,
+                onVisible(isVisible, context) {
+                    // Show or hide your custom submit button
+                    console.log(['onVisible', isVisible, context])
+                    payButton.parentNode.style.display = isVisible ? 'block' : 'none';
+                },
+
+                // Callback for receiving the submit button's disabled state in the current scene
+                onDisable(isDisabled, context) {
+                    // Disable or enable your custom submit button
+                    console.log(['onDisable', isDisabled, context])
+                    payButton.disabled = isDisabled
+                },
+
+                // Callback for receiving the submit button's loading state in the current scene
+                onLoading(isLoading, context) {
+                    // Show your submit button in a loading state
+                    console.log(['onLoading', isLoading, context])
+                },
+
+                // Callback for receiving the submit button's content in the current scene
+                onContentChange(content) {
+                    // Set your submit button's content with either the content provided or your own custom content
+                    console.log(['onContentChange', content])
+                },
             }
-        };
+        });
+    }
 
-        settings.apiEndpoint = 'https://api.payments.paltabrain.com'
-        settings.apiKey = 'a87f9d0ef2d341ea931d0ca626193e34'
+    const params = new URLSearchParams(window ? window.location.search : {});
+    const workflow = params.get('workflow');
+    const pricePointIdent = params.get('price_point_ident');
+    const customerIdValue = params.get('customer_id');
+    const customerId = {
+        type: "merchant-uuid",
+        value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    };
+    const settings = {
+        metadata: {
+            workflow: workflow ? workflow : "",
+        },
+        onError: (error, description) => {
+            console.log(description);
+            console.log(error);
+        }
+    };
 
-        const client = paltaBrainPayments.createPaymentClient(settings);
-        if (pricePointIdent == null) {
-            client.getPricePoints({
-                customerId: null,
-                countryCode: "US",
-                platformCode: "desktop_web",
-                requestContext: {},
-            }).then((pricePoints) => {
-                showForm(pricePoints[0].ident).then(checkoutForm => {
-                    payButton.addEventListener("click", () => {
-                        checkoutForm.submit();
-                    })
-                })
-            })
-        } else {
-            showForm(pricePointIdent).then(checkoutForm => {
+    settings.apiEndpoint = 'https://api.payments.paltabrain.com'
+    settings.apiKey = 'a87f9d0ef2d341ea931d0ca626193e34'
+
+    const client = paltaBrainPayments.createPaymentClient(settings);
+    if (pricePointIdent == null) {
+        client.getPricePoints({
+            customerId: null,
+            countryCode: "US",
+            platformCode: "desktop_web",
+            requestContext: {},
+        }).then((pricePoints) => {
+            showForm(pricePoints[0].ident).then(checkoutForm => {
                 payButton.addEventListener("click", () => {
                     checkoutForm.submit();
                 })
             })
-        }
-    </script>
+        })
+    } else {
+        showForm(pricePointIdent).then(checkoutForm => {
+            payButton.addEventListener("click", () => {
+                checkoutForm.submit();
+            })
+        })
+    }
+</script>
 </body>
 
 </html>

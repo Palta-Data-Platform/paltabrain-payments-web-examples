@@ -2,29 +2,31 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pure html implementation</title>
     <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
+    <link rel="stylesheet" href="https://sdk.primer.io/web/v2.27.1/Checkout.css"/>
+    <script src="https://sdk.primer.io/web/v2.27.1/Primer.min.js" crossorigin="anonymous"></script>
     <style>
         main {
             display: flex;
             flex-direction: column;
         }
-        
-        main>article {
+
+        main > article {
             margin: 10px 0;
         }
-        
+
         .payment-buttons {
             display: flex;
             flex-direction: row;
         }
-        
-        .payment-buttons>button {
+
+        .payment-buttons > button {
             margin-right: 10px;
         }
-        
+
         #checkout-container {
             width: 500px;
         }
@@ -32,118 +34,118 @@
 </head>
 
 <body>
-    Payment Screen
-    <br />
-    <article class="payment-buttons">
-        <button id="paypal-button">Paypal</button>
-        <button id="card-button">Card</button>
-    </article>
-    <div id="checkout-container"></div>
-    <script type="text/javascript">
-        // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
-        function uuidv4() {
-            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-        }
+Payment Screen
+<br/>
+<article class="payment-buttons">
+    <button id="paypal-button">Paypal</button>
+    <button id="card-button">Card</button>
+</article>
+<div id="checkout-container"></div>
+<script type="text/javascript">
+    // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
+    function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
 
-        function showForm(client, ident) {
-            client.showPaymentForm({
-                ident: ident,
+    function showForm(client, ident) {
+        client.showPaymentForm({
+            ident: ident,
+            countryCode: "US",
+            platformCode: "desktop_web",
+            orderId: uuidv4(),
+            customerId: customerId,
+            customer: {
+                emailAddress: "testing@paltabrain.com",
+                billingAddress: {
+                    addressLine1: "Main St",
+                    addressLine2: "175",
+                    city: "Montpelier",
+                    countryCode: "US",
+                    postalCode: "05602",
+                },
+            },
+        }, {
+            container: "#checkout-container",
+            locale: "en-US",
+            vault: {
+                visible: false
+            },
+            paypal: {
+                buttonColor: "black",
+                buttonShape: "pill",
+                buttonSize: "large",
+                buttonLabel: "buynow",
+                paymentFlow: 'PREFER_VAULT',
+            },
+        });
+    }
+
+    const params = new URLSearchParams(window ? window.location.search : {});
+    const workflow = params.get('workflow');
+    const apiKey = params.get('api_key');
+    const apiEndPoint = params.get('api_end_point');
+    const pricePointIdent = params.get('price_point_ident');
+    const customerIdValue = params.get('customer_id');
+    const customerId = {
+        type: "merchant-uuid",
+        value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    };
+    const settings = {
+        apiEndpoint: apiEndPoint != null ? apiEndPoint : 'http://localhost:8080',
+        apiKey: apiKey != null ? apiKey : 'public-key-13',
+        metadata: {
+            workflow: workflow ? workflow : "",
+        },
+        onError: (error, description) => {
+            console.log(description);
+            console.log(error);
+        }
+    };
+
+    if (window.location.hostname !== 'localhost') {
+        settings.apiEndpoint = apiEndPoint != null ? apiEndPoint : 'https://api.payments.paltabrain.com'
+        settings.apiKey = apiKey != null ? apiKey : 'feefe9c57a314b0bbc7baeab1eb79c41'
+    }
+
+    const paypalButtonElement = document.getElementById("paypal-button");
+    const cardButtonElement = document.getElementById("card-button");
+
+    paypalButtonElement.addEventListener("click", () => {
+        settings.metadata['paypal'] = 1
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        if (pricePointIdent == null) {
+            client.getPricePoints({
+                customerId: null,
                 countryCode: "US",
                 platformCode: "desktop_web",
-                orderId: uuidv4(),
-                customerId: customerId,
-                customer: {
-                    emailAddress: "testing@paltabrain.com",
-                    billingAddress: {
-                        addressLine1: "Main St",
-                        addressLine2: "175",
-                        city: "Montpelier",
-                        countryCode: "US",
-                        postalCode: "05602",
-                    },
-                },
-            }, {
-                container: "#checkout-container",
-                locale: "en-US",
-                vault: {
-                    visible: false
-                },
-                paypal: {
-                    buttonColor: "black",
-                    buttonShape: "pill",
-                    buttonSize: "large",
-                    buttonLabel: "buynow",
-                    paymentFlow: 'PREFER_VAULT',
-                },
-            });
+                requestContext: {},
+            }).then((pricePoints) => {
+                showForm(client, pricePoints[0].ident)
+            })
+        } else {
+            showForm(client, pricePointIdent)
         }
+    })
 
-        const params = new URLSearchParams(window ? window.location.search : {});
-        const workflow = params.get('workflow');
-        const apiKey = params.get('api_key');
-        const apiEndPoint = params.get('api_end_point');
-        const pricePointIdent = params.get('price_point_ident');
-        const customerIdValue = params.get('customer_id');
-        const customerId = {
-            type: "merchant-uuid",
-            value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        };
-        const settings = {
-            apiEndpoint: apiEndPoint != null ? apiEndPoint : 'http://localhost:8080',
-            apiKey: apiKey != null ? apiKey : 'public-key-13',
-            metadata: {
-                workflow: workflow ? workflow : "",
-            },
-            onError: (error, description) => {
-                console.log(description);
-                console.log(error);
-            }
-        };
-
-        if (window.location.hostname !== 'localhost') {
-            settings.apiEndpoint = apiEndPoint != null ? apiEndPoint : 'https://api.payments.paltabrain.com'
-            settings.apiKey = apiKey != null ? apiKey : 'feefe9c57a314b0bbc7baeab1eb79c41'
+    cardButtonElement.addEventListener("click", () => {
+        settings.metadata['card'] = 1
+        const client = paltaBrainPayments.createPaymentClient(settings);
+        if (pricePointIdent == null) {
+            client.getPricePoints({
+                customerId: null,
+                countryCode: "US",
+                platformCode: "desktop_web",
+                requestContext: {},
+            }).then((pricePoints) => {
+                showForm(client, pricePoints[0].ident)
+            })
+        } else {
+            showForm(client, pricePointIdent)
         }
-
-        const paypalButtonElement = document.getElementById("paypal-button");
-        const cardButtonElement = document.getElementById("card-button");
-
-        paypalButtonElement.addEventListener("click", () => {
-            settings.metadata['paypal'] = 1
-            const client = paltaBrainPayments.createPaymentClient(settings);
-            if (pricePointIdent == null) {
-                client.getPricePoints({
-                    customerId: null,
-                    countryCode: "US",
-                    platformCode: "desktop_web",
-                    requestContext: {},
-                }).then((pricePoints) => {
-                    showForm(client, pricePoints[0].ident)
-                })
-            } else {
-                showForm(client, pricePointIdent)
-            }
-        })
-
-        cardButtonElement.addEventListener("click", () => {
-            settings.metadata['card'] = 1
-            const client = paltaBrainPayments.createPaymentClient(settings);
-            if (pricePointIdent == null) {
-                client.getPricePoints({
-                    customerId: null,
-                    countryCode: "US",
-                    platformCode: "desktop_web",
-                    requestContext: {},
-                }).then((pricePoints) => {
-                    showForm(client, pricePoints[0].ident)
-                })
-            } else {
-                showForm(client, pricePointIdent)
-            }
-        })
-    </script>
+    })
+</script>
 </body>
 
 </html>
