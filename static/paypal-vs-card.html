@@ -99,6 +99,9 @@ Payment Screen
         onError: (error, description) => {
             console.log(description);
             console.log(error);
+        },
+        onPaymentStatusChange: (status) => {
+            console.log(status);
         }
     };
 
