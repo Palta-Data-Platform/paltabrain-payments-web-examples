@@ -37,8 +37,8 @@ export const PaymentScreen = (): ReactElement => {
         console.log(description);
         console.log(error);
       },
-      onPaymentStatusChange: (status: string) => {
-        console.log(status);
+      onPaymentStatusChange: (status: string, method: string) => {
+        console.log(status + " " + method);
       },
     };
 

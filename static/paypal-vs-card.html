@@ -100,8 +100,8 @@ Payment Screen
             console.log(description);
             console.log(error);
         },
-        onPaymentStatusChange: (status) => {
-            console.log(status);
+        onPaymentStatusChange: (status, method) => {
+            console.log(status + " " + method);
         }
     };
 
