@@ -181,6 +181,7 @@ Payment Screen
         const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
         const resultElement = document.getElementById('one-click-result');
         const paymentType = document.getElementById("payment_type").value
+        const metadata = document.getElementById("metadata").value
         resultElement.textContent = '...loading...';
 
         const url = apiEndPoint + '/primer/purchase';
@@ -190,7 +191,8 @@ Payment Screen
                 "value": customerId
             },
             "ident": ident,
-            "paymentType": paymentType
+            "paymentType": paymentType,
+            "metadata": JSON.parse(metadata)
         }
 
         fetch(url, {
