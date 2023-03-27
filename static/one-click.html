@@ -55,6 +55,10 @@ Payment Screen
     <label for="ident">Ident:</label>
     <input type="text" id="ident">
     <br/>
+    <br/>
+    <label for="metadata">Metadata:</label>
+    <input type="text" id="metadata">
+    <br/>
 </article>
 
 
@@ -84,7 +88,7 @@ Payment Screen
         document.getElementById("customer_id").value = uuid4();
         document.getElementById("api_endpoint").value = "https://api.payments.paltabrain.com";
         document.getElementById("api_key").value = "my_secret_api_key";
-        document.getElementById("ident").value = "ident-price-point";
+        document.getElementById("ident").value = "leetcode_usd25";
     }
 
     setDefaults();
@@ -97,11 +101,12 @@ Payment Screen
         const ident = document.getElementById("ident").value
         const customerId = document.getElementById("customer_id").value
         const apiKey = document.getElementById("api_key").value
+        const metadata = document.getElementById("metadata").value
 
         const settings = {
             apiEndpoint: apiEndPoint,
             apiKey: apiKey,
-            metadata: {},
+            metadata: JSON.parse(metadata),
             onError: (error, description) => {
                 console.log(description);
                 console.log(error);
