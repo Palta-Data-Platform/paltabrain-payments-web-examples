@@ -37,7 +37,7 @@ export const MultiForm = (): ReactElement => {
 
     const client: PaymentClient = createPaymentClient(settings);
 
-    client?.showPaymentForm(
+    await client?.showPaymentForm(
       {
         ident: ident,
         countryCode: "US",
@@ -71,9 +71,10 @@ export const MultiForm = (): ReactElement => {
   };
 
   useEffect(() => {
-    previousRender = previousRender.then(() => {
+    previousRender = previousRender.then(async () => {
       document.getElementById("checkout-container-card").innerHTML = "";
-      createClient("#checkout-container-card", idents[priceId]);
+      await createClient("#checkout-container-card", idents[priceId]);
+      return 1;
     });
   }, [priceId]);
 
@@ -89,7 +90,9 @@ export const MultiForm = (): ReactElement => {
           Price 2
         </button>
       </div>
-      <div style={{ margin: "10px 0" }}>Current price point ident: <b>{idents[priceId]}</b></div>
+      <div style={{ margin: "10px 0" }}>
+        Current price point ident: <b>{idents[priceId]}</b>
+      </div>
       <div id={"checkout-container-card"}></div>
     </>
   );
