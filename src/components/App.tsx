@@ -5,6 +5,7 @@ import "./../assets/scss/App.scss";
 import { PaymentScreen } from "./PaymentScreen";
 import { ReactElement } from "react";
 import { PreLoad } from "./PreLoad";
+import { MultiForm } from "./MultiForm";
 
 export const App = (): ReactElement => {
   return (
@@ -14,6 +15,9 @@ export const App = (): ReactElement => {
       </Routes>
       <Routes>
         <Route path={"/preload"} element={<PreLoad />} />
+      </Routes>
+      <Routes>
+        <Route path={"/multiform"} element={<MultiForm />} />
       </Routes>
     </BrowserRouter>
   );

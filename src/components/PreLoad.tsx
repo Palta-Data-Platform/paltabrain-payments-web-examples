@@ -76,7 +76,11 @@ export const PreLoad = (): ReactElement => {
   };
 
   const loadCheckout = async () => {
-    await createClient(setClientCard, { card: 1, paypal: 1 }, "#checkout-container-card");
+    await createClient(
+      setClientCard,
+      { card: 1, paypal: 1 },
+      "#checkout-container-card",
+    );
   };
 
   useEffect(() => {
