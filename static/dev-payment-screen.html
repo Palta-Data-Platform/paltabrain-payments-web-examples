@@ -55,6 +55,7 @@ Payment Screen
 
     const params = new URLSearchParams(window ? window.location.search : {});
     const workflow = params.get('workflow');
+    const psp = params.get('psp');
     const apiKey = params.get('api_key');
     const apiEndPoint = params.get('api_end_point');
     const pricePointIdent = params.get('price_point_ident');
@@ -69,6 +70,7 @@ Payment Screen
         apiKey: apiKey != null ? apiKey : 'public-key-13',
         metadata: {
             workflow: workflow ? workflow : "",
+            psp: psp ? psp : "",
         },
         onError: (error, description) => {
             console.log(description);
