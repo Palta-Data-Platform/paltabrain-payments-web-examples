@@ -74,7 +74,7 @@
     },
     "dependencies": {
         "@palta-brain/payments": "^0.3.15",
-        "@primer-io/checkout-web": "^2.27.2",
+        "@primer-io/checkout-web": "^2.28.0",
         "react-router-dom": "^6.9.0",
         "sass": "^1.59.3",
         "uuid": "^9.0.0"
