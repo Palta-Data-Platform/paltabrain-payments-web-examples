@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration with Braintree</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Load the client component. -->
+    <script src="https://js.braintreegateway.com/web/3.92.2/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.92.2/js/paypal-checkout.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.92.2/js/data-collector.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.92.2/js/hosted-fields.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div id="preparation-form">
+        <h2>Preparation</h2>
+        <div class="form-group">
+            <label for="domain">Domain</label>
+            <input id="domain" class="form-control" type="text" value="http://localhost:8080">
+        </div>
+        <div class="form-group">
+            <label for="api_key">Api key</label>
+            <input id="api_key" class="form-control" type="text" value="public-key-11">
+        </div>
+        <div class="form-group">
+            <label for="customer_id">Customer ID</label>
+            <input id="customer_id" class="form-control" type="text" value="f42a9b2714104167a07c15b620c5b34c">
+        </div>
+        <div class="form-group">
+            <label for="price_point_id">Price Point ID</label>
+            <input id="price_point_id" class="form-control" type="text" value="1">
+        </div>
+        <button id="continue-button" class="btn btn-primary" type="button">Continue</button>
+    </div>
+
+    <div id="payment-container" style="display: none;">
+        <div id="paypal-button"></div>
+        <div id="card-container">
+            <div class="form-group">
+                <label for="card-number">Card Number</label>
+                <div id="card-number" class="form-control"></div>
+            </div>
+            <div class="form-group">
+                <label for="expiration-date">Expiration Date</label>
+                <div id="expiration-date" class="form-control"></div>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <div id="cvv" class="form-control"></div>
+            </div>
+            <button id="card-button" class="btn btn-primary" type="submit">Pay with Card</button>
+            <div id="payment-status" style="margin-top: 5px"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  async function createClientSession(customerId, domain, apiKey, ident) {
+    const response = await fetch(`${domain}/braintree/create_client_session`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+          "customerId": {
+            "type": "merchant-uuid",
+            "value": customerId
+          },
+          "ident": ident
+        })
+      });
+    return await response.json();
+  }
+
+  async function createTransaction(nonce, domain, apiKey, deviceData, orderId) {
+    return await fetch(`${domain}/braintree/create_transaction`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({nonce: nonce, deviceData: deviceData, orderId: orderId})
+    });
+  }
+
+  async function fetchDataCollectorInstance(clientInstance) {
+    return new Promise((resolve, reject) => {
+      braintree.dataCollector.create({
+        client: clientInstance,
+        kount: true
+      }, (err, dataCollectorInstance) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(dataCollectorInstance);
+        }
+      });
+    });
+  }
+
+  async function createBraintreeClientInstance(clientToken) {
+    return new Promise((resolve, reject) => {
+      braintree.client.create({authorization: clientToken}, (err, instance) => {
+        if (err) reject(err);
+        else resolve(instance);
+      });
+    });
+  }
+
+  async function createHostedFieldsInstance(clientInstance) {
+    return new Promise((resolve, reject) => {
+      braintree.hostedFields.create({
+        client: clientInstance,
+        styles: {
+          'input': {
+            'font-size': '14px',
+            'font-family': 'Arial, sans-serif'
+          },
+          ':focus': {
+            'color': 'black'
+          }
+        },
+        fields: {
+          number: {
+            selector: '#card-number',
+            placeholder: '4111 1111 1111 1111'
+          },
+          cvv: {
+            selector: '#cvv',
+            placeholder: '123'
+          },
+          expirationDate: {
+            selector: '#expiration-date',
+            placeholder: 'MM/YYYY'
+          },
+        }
+      }, (err, instance) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(instance);
+        }
+      });
+    });
+  }
+
+  async function setupCardButton(hostedFieldsInstance, orderId, domain, apiKey, deviceData) {
+    const cardButton = document.getElementById('card-button');
+    const paymentStatus = document.getElementById('payment-status');
+    cardButton.addEventListener('click', async () => {
+      cardButton.disabled = true;
+      cardButton.innerText = "Loading...";
+      try {
+        const {nonce, details} = await hostedFieldsInstance.tokenize();
+        console.log('Got a nonce:', nonce);
+        console.log('Card details:', details);
+        console.log('deviceData:', deviceData);
+
+        const response = await createTransaction(nonce, domain, apiKey, deviceData, orderId);
+        if (response.ok) {
+          paymentStatus.innerHTML = "<div class='alert alert-success'>Payment was successful!</div>";
+        } else {
+          paymentStatus.innerHTML = "<div class='alert alert-danger'>Payment failed. Please try again.</div>";
+        }
+      } catch (err) {
+        console.error('Error tokenizing card:', err);
+        paymentStatus.innerHTML = "<div class='alert alert-danger'>Payment failed. Please try again.</div>";
+      } finally {
+        cardButton.disabled = false;
+        cardButton.innerText = "Pay with Card";
+      }
+    });
+  }
+
+  async function createPayPalCheckoutInstance(clientInstance) {
+    return new Promise((resolve, reject) => {
+      braintree.paypalCheckout.create({client: clientInstance}, (err, instance) => {
+        if (err) reject(err);
+        else resolve(instance);
+      });
+    });
+  }
+
+  async function setupPayPalButton(paypalCheckoutInstance, orderId, domain, apiKey, deviceData, amount, currency) {
+    const paymentStatus = document.getElementById('payment-status');
+
+    await paypalCheckoutInstance.loadPayPalSDK({
+      currency: currency,
+      intent: 'capture',
+    });
+
+    return paypal.Buttons({
+      fundingSource: paypal.FUNDING.PAYPAL,
+      env: 'sandbox',
+
+      createOrder: async function () {
+        return paypalCheckoutInstance.createPayment({
+          flow: 'checkout',
+          amount: amount,
+          currency: currency,
+          intent: 'capture',
+          requestBillingAgreement: true,
+          billingAgreementDetails: {
+            description: 'Description of the billng agreement to display to the customer'
+          },
+        });
+      },
+
+      onApprove: async function (data, actions) {
+        const payload = await paypalCheckoutInstance.tokenizePayment(data);
+        console.log('Got a nonce:', payload.nonce);
+        console.log(payload);
+
+        const response = await createTransaction(payload.nonce, domain, apiKey, deviceData, orderId);
+        if (response.ok) {
+          paymentStatus.innerHTML = "<div class='alert alert-success'>Payment was successful!</div>";
+        } else {
+          paymentStatus.innerHTML = "<div class='alert alert-danger'>Payment failed. Please try again.</div>";
+        }
+
+      },
+
+      onCancel: function (data) {
+        console.log('Checkout cancelled');
+      },
+
+      onError: function (err) {
+        paymentStatus.innerHTML = "<div class='alert alert-danger'>Payment failed. Please try again.</div>";
+        console.error('Error:', err);
+      }
+    }).render('#paypal-button');
+  }
+
+  function uuid4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
+
+  async function initializeBraintree(domain, apiKey, ident, customerId, amount, currency) {
+    try {
+      const data = await createClientSession(customerId, domain, apiKey, ident);
+      const clientToken = data.clientToken;
+      const orderId = data.orderId;
+
+      const clientInstance = await createBraintreeClientInstance(clientToken);
+      const dataCollectorInstance = await fetchDataCollectorInstance(clientInstance);
+      const deviceData = dataCollectorInstance.deviceData;
+
+      const paypalCheckoutInstance = await createPayPalCheckoutInstance(clientInstance);
+      await setupPayPalButton(paypalCheckoutInstance, orderId, domain, apiKey, deviceData, amount, currency);
+
+      const hostedFieldsInstance = await createHostedFieldsInstance(clientInstance);
+      await setupCardButton(hostedFieldsInstance, orderId, domain, apiKey, deviceData);
+
+    } catch (err) {
+      console.error('Error during Braintree setup:', err);
+    }
+  }
+
+  document.getElementById('continue-button').addEventListener('click', async () => {
+    const customerId = document.getElementById('customer_id').value;
+    const domain = document.getElementById('domain').value;
+    const pricePointId = document.getElementById('price_point_id').value;
+    const apiKey = document.getElementById('api_key').value;
+
+    try {
+      const pricePointResponse = await fetch(`${domain}/price-configurator/get-price-point`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({id: pricePointId}),
+      });
+
+      if (!pricePointResponse.ok) {
+        throw new Error('Failed to fetch price point');
+      }
+
+      const pricePointData = await pricePointResponse.json();
+      const amount = pricePointData.pricePoint.introBasePrice;
+      const currency = pricePointData.pricePoint.currencyCode;
+      const ident = pricePointData.pricePoint.ident;
+
+      document.getElementById('preparation-form').style.display = 'none';
+      document.getElementById('payment-container').style.display = 'block';
+
+      await initializeBraintree(domain, apiKey, ident, customerId, amount, currency);
+    } catch (error) {
+      console.error('Error during preparation step:', error);
+    }
+  });
+
+</script>
+
+</body>
+</html>
