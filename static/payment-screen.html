@@ -25,7 +25,7 @@ Payment Screen
             ident: ident,
             countryCode: "US",
             platformCode: "desktop_web",
-            orderId: uuidv4(),
+            orderId: orderId != null ? orderId : uuidv4(),
             customerId: customerId,
             customer: {
                 emailAddress: "testing@paltabrain.com",
@@ -55,10 +55,12 @@ Payment Screen
 
     const params = new URLSearchParams(window ? window.location.search : {});
     const workflow = params.get('workflow');
+    const psp = params.get('psp');
     const apiKey = params.get('api_key');
     const apiEndPoint = params.get('api_end_point');
     const pricePointIdent = params.get('price_point_ident');
     const customerIdValue = params.get('customer_id');
+    const orderId = params.get('order_id')
     const customerId = {
         type: "merchant-uuid",
         value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -68,6 +70,7 @@ Payment Screen
         apiKey: apiKey != null ? apiKey : 'public-key-13',
         metadata: {
             workflow: workflow ? workflow : "",
+            psp: psp ? psp : "",
         },
         onError: (error, description) => {
             console.log(description);
@@ -77,7 +80,7 @@ Payment Screen
 
     if (window.location.hostname !== 'localhost') {
         settings.apiEndpoint = apiEndPoint != null ? apiEndPoint : 'https://api.payments.paltabrain.com'
-        settings.apiKey = apiKey != null ? apiKey : 'c5e8c9fdaa8748649837371f9547e84f'
+        settings.apiKey = apiKey != null ? apiKey : '35111018b1bb4eb08520dfb6108c5edf'
     }
 
     const client = paltaBrainPayments.createPaymentClient(settings);
