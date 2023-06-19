@@ -26,7 +26,7 @@ module.exports = merge(commonConfig, {
     }),
     new webpack.DefinePlugin({
       "process.env.API_ENDPOINT": '"https://api.payments.paltabrain.com"',
-      "process.env.API_KEY": '"a87f9d0ef2d341ea931d0ca626193e34"',
+      "process.env.API_KEY": '"c5e8c9fdaa8748649837371f9547e84f"',
     }),
   ],
 });
