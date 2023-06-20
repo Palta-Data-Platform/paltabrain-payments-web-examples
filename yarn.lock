@@ -1373,10 +1373,15 @@
   dependencies:
     "@primer-io/checkout-web" "2.27.2"
 
-"@primer-io/checkout-web@2.27.2", "@primer-io/checkout-web@^2.27.2":
+"@primer-io/checkout-web@2.27.2":
   version "2.27.2"
   resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.27.2.tgz#0c640d3d4f9fcd76dc2c8d97d73623a49b9c5892"
   integrity sha512-xIqqr2byxOZVDKDN3q7H0qSVFgyOTFGpFew2PBXWeIzgDu2gzGbPY/Hb7pX70Mu2Va5szvhDqH4GpDYsItn1kg==
+
+"@primer-io/checkout-web@^2.30.0":
+  version "2.31.0"
+  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.31.0.tgz#a45a3461e32f505dcc49150916b14ffd36aa9b80"
+  integrity sha512-54XUFf2OkDV/UaBta9ZhJc3k6rNPm5c6IfrOrQvrGAN1uNQXJSAGbdj6vbkHylM4f7oNK6OFYJ794epsV4Fr2A==
 
 "@remix-run/router@1.4.0":
   version "1.4.0"
