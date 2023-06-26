@@ -6,12 +6,16 @@ import { PaymentScreen } from "./PaymentScreen";
 import { ReactElement } from "react";
 import { PreLoad } from "./PreLoad";
 import { MultiForm } from "./MultiForm";
+import { Test } from './Test';
 
 export const App = (): ReactElement => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path={"/"} element={<PaymentScreen />} />
+      </Routes>
+      <Routes>
+        <Route path={"/test"} element={<Test />} />
       </Routes>
       <Routes>
         <Route path={"/preload"} element={<PreLoad />} />
