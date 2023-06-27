@@ -97,7 +97,10 @@ export const Test = (): ReactElement => {
   const onCopyAsLink = async () => {
     let url = window.location.origin + window.location.pathname + "?";
     Object.keys(data).forEach((key) => {
-      url += `${key}=${data[key]}&`;
+      const value = data[key];
+      if (defaultData[key] !== value) {
+        url += `${key}=${value}&`;
+      }
     });
 
     await navigator.clipboard.writeText(url.substring(0, url.length - 1));
