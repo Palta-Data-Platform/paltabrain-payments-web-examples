@@ -269,7 +269,7 @@ export const Test = (): ReactElement => {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col style={{ marginBottom: "20px" }}>
           <Space>
             <Button type={"primary"} onClick={onShowPaymentForm}>
               Show payment form
@@ -282,8 +282,8 @@ export const Test = (): ReactElement => {
           </Space>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row align={"middle"}>
+        <Col span={24}>
           <div id={"paymentForm"} />
         </Col>
       </Row>
