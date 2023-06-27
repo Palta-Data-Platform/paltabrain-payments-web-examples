@@ -70,6 +70,8 @@ export const Test = (): ReactElement => {
         Object.keys(newData).forEach((key) => {
           if (key !== "orderId" && key !== "customerId") {
             formRef.current?.setFieldValue(key, newData[key]);
+          } else {
+            newData[key] = data[key];
           }
         });
         setData(newData);
