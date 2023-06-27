@@ -79,7 +79,9 @@ export const Test = (): ReactElement => {
     } else {
       const fromQuery = {};
       params.forEach((val, key) => {
-        fromQuery[key] = val;
+        if (key !== "privateApiKey") {
+          fromQuery[key] = val;
+        }
       });
       const newData = {
         ...defaultData,
@@ -100,7 +102,7 @@ export const Test = (): ReactElement => {
     let url = window.location.origin + window.location.pathname + "?";
     Object.keys(data).forEach((key) => {
       const value = data[key];
-      if (defaultData[key] !== value) {
+      if (defaultData[key] !== value && key !== "privateApiKey") {
         url += `${key}=${value}&`;
       }
     });
