@@ -8,12 +8,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Load the client component. -->
-    <script src="https://js.braintreegateway.com/web/3.92.2/js/client.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.92.2/js/paypal-checkout.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.92.2/js/data-collector.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.92.2/js/hosted-fields.min.js"></script>
-
     <link rel="stylesheet" href="https://sdk.primer.io/web/v2.0.0/Checkout.css"/>
     <script src="https://sdk.primer.io/web/v2.0.0/Primer.min.js" crossorigin="anonymous"></script>
 </head>
@@ -64,10 +58,14 @@
     <div id="payment-status" style="margin-top: 5px"></div>
 </div>
 
+<script src="https://js.braintreegateway.com/web/3.92.2/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.92.2/js/paypal-checkout.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.92.2/js/data-collector.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.92.2/js/hosted-fields.min.js"></script>
+
 <script>
 
-    <!--
-    braintree  -->
+    <!-- braintree  -->
 
     function createTransaction(nonce, domain, apiKey, deviceData, orderId) {
         return fetch(`${domain}/braintree/create-transaction`, {
