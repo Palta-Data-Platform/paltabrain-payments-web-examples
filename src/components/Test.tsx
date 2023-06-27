@@ -282,8 +282,8 @@ export const Test = (): ReactElement => {
           </Space>
         </Col>
       </Row>
-      <Row align={"middle"}>
-        <Col span={24}>
+      <Row>
+        <Col>
           <div id={"paymentForm"} />
         </Col>
       </Row>
