@@ -37,7 +37,7 @@ type DataType = {
 };
 
 const defaultData: DataType = {
-  paymentType: "SUBSCRIPTION",
+  paymentType: "FIRST_PAYMENT",
   orderId: uuidv4(),
   customerId: uuidv4(),
   publicApiKey: "",
@@ -192,6 +192,7 @@ export const Test = (): ReactElement => {
                   { value: "SUBSCRIPTION", label: "SUBSCRIPTION" },
                   { value: "FIRST_PAYMENT", label: "FIRST_PAYMENT" },
                   { value: "ECOMMERCE", label: "ECOMMERCE" },
+                  { value: "UNSCHEDULED", label: "UNSCHEDULED" },
                 ]}
               />
             </Form.Item>
