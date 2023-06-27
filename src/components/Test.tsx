@@ -62,13 +62,29 @@ export const Test = (): ReactElement => {
   };
 
   useEffect(() => {
-    const raw = localStorage.getItem("_pbp_test_data");
-    if (raw) {
-      const newData: DataType = JSON.parse(raw);
+    const params = new URLSearchParams(window ? window.location.search : {});
+    if (0 < params.keys.length) {
+      const raw = localStorage.getItem("_pbp_test_data");
+      if (raw) {
+        const newData: DataType = JSON.parse(raw);
+        Object.keys(newData).forEach((key) => {
+          if (key !== "orderId" && key !== "customerId") {
+            formRef.current?.setFieldValue(key, newData[key]);
+          }
+        });
+        setData(newData);
+      }
+    } else {
+      const fromQuery = {};
+      params.forEach((val, key) => {
+        fromQuery[key] = val;
+      });
+      const newData = {
+        ...defaultData,
+        ...fromQuery,
+      };
       Object.keys(newData).forEach((key) => {
-        if (key !== "orderId" && key !== "customerId") {
-          formRef.current?.setFieldValue(key, newData[key]);
-        }
+        formRef.current?.setFieldValue(key, newData[key]);
       });
       setData(newData);
     }
@@ -76,6 +92,15 @@ export const Test = (): ReactElement => {
 
   const saveToLocalStorage = (obj) => {
     localStorage.setItem("_pbp_test_data", JSON.stringify(obj));
+  };
+
+  const onCopyAsLink = async () => {
+    let url = window.location.origin + window.location.pathname + "?";
+    Object.keys(data).forEach((key) => {
+      url += `${key}=${data[key]}&`;
+    });
+
+    await navigator.clipboard.writeText(url.substring(0, url.length - 1));
   };
 
   const onClear = () => {
@@ -148,7 +173,7 @@ export const Test = (): ReactElement => {
         },
       },
       {
-        container: "paymentForm",
+        container: "#paymentForm",
         locale: "en-US",
         vault: { visible: false },
         paypal: {
@@ -166,7 +191,9 @@ export const Test = (): ReactElement => {
     <>
       <Row>
         <Col span={24}>
-          <h1>Testing page</h1>
+          <h1>
+            <a href={"/test"}>Testing page</a>
+          </h1>
           <Form
             ref={formRef}
             name="basic"
@@ -247,6 +274,7 @@ export const Test = (): ReactElement => {
             <Button type={"primary"} onClick={onOneClickPayment}>
               One click payment
             </Button>
+            <Button onClick={onCopyAsLink}>Copy as link</Button>
             <Button onClick={onClear}>Clear</Button>
           </Space>
         </Col>
