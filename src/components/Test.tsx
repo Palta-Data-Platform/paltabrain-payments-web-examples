@@ -20,11 +20,6 @@ import {
   Space,
 } from "antd";
 
-const customerId = {
-  type: "merchant-uuid",
-  value: uuidv4(),
-};
-
 type DataType = {
   paymentType: string;
   orderId: string;
@@ -166,8 +161,11 @@ export const Test = (): ReactElement => {
         ident: data.ident,
         countryCode: "US",
         platformCode: "desktop_web",
-        orderId: uuidv4(),
-        customerId: customerId,
+        orderId: data.orderId,
+        customerId: {
+          type: "merchant-uuid",
+          value: data.customerId,
+        },
         customer: {
           emailAddress: "testing@paltabrain.com",
           billingAddress: {
