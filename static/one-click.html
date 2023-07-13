@@ -20,6 +20,10 @@
             margin-right: 10px;
         }
 
+        .refresh-button > button {
+            margin-right: 10px;
+        }
+
         #checkout-container {
             width: 500px;
         }
@@ -38,13 +42,24 @@ Payment Screen
 <article>
     <h2> Step 0. Fill up the parameters </h2>
     <label for="payment_type">Payment Type:</label>
-    <input type="text" id="payment_type">
+    <select id="payment_type">
+        <option value="FIRST_PAYMENT">FIRST_PAYMENT</option>
+        <option value="SUBSCRIPTION">SUBSCRIPTION</option>
+        <option value="ECOMMERCE">ECOMMERCE</option>
+        <option value="UNSCHEDULED">UNSCHEDULED</option>
+    </select>
     <br/>
     <label for="order_id">Order Id</label>
     <input type="text" id="order_id">
     <br/>
     <label for="customer_id">Customer Id</label>
     <input type="text" id="customer_id">
+    <br/>
+    <label for="customer_id_type">Customer Id type</label>
+    <select id="customer_id_type">
+        <option value="merchant-uuid">merchant-uuid</option>
+        <option value="merchant-str">merchant-str</option>
+    </select>
     <br/>
     <label for="api_endpoint">Api Endpoint</label>
     <input type="text" id="api_endpoint">
@@ -64,13 +79,17 @@ Payment Screen
 
 <article class="payment-buttons">
     <h2> Step 1. Pay to vault a card </h2>
-    <button id="paypal-button">Paypal</button>
-    <button id="card-button">Card</button>
+    <button id="card-button">Start checkout</button>
     <div id="checkout-container"></div>
 </article>
 
+<article class="refresh-button">
+    <h2> Step 2. Update metadata or ident if needed </h2>
+    <button id="refresh">Refresh</button>
+</article>
+
 <article class="payment-one-click">
-    <h2> Step 2. Make a one-click payment </h2>
+    <h2> Step 3. Make a one-click payment </h2>
     <button id="one-click-button">One Click Payment</button>
     <div id="one-click-result"></div>
 </article>
@@ -83,12 +102,12 @@ Payment Screen
     }
 
     function setDefaults() {
-        document.getElementById("payment_type").value = "SUBSCRIPTION";
+        document.getElementById("payment_type").value = "FIRST_PAYMENT";
         document.getElementById("order_id").value = uuid4();
         document.getElementById("customer_id").value = uuid4();
         document.getElementById("api_endpoint").value = "https://api.payments.paltabrain.com";
         document.getElementById("api_key").value = "my_secret_api_key";
-        document.getElementById("ident").value = "leetcode_usd25";
+        document.getElementById("ident").value = "leetcode_usd26";
         document.getElementById("metadata").value = "{}";
     }
 
@@ -101,10 +120,12 @@ Payment Screen
         const apiEndPoint = document.getElementById("api_endpoint").value
         const ident = document.getElementById("ident").value
         const customerId = document.getElementById("customer_id").value
+        const customerIdType = document.getElementById("customer_id_type").value
         const apiKey = document.getElementById("api_key").value
         const metadata = document.getElementById("metadata").value
+        const orderId = document.getElementById("order_id").value
 
-        const settings = {
+        const clientSettings = {
             apiEndpoint: apiEndPoint,
             apiKey: apiKey,
             metadata: JSON.parse(metadata),
@@ -113,23 +134,13 @@ Payment Screen
                 console.log(error);
             }
         };
-
-        return [settings, ident, customerId, apiKey, apiEndPoint]
-    }
-
-</script>
-
-
-<script type="text/javascript">
-
-    function showForm(client, ident, customerId) {
-        client.showPaymentForm({
+        const formSettings = {
             ident: ident,
             countryCode: "US",
             platformCode: "desktop_web",
-            orderId: uuid4(),
+            orderId: orderId,
             customerId: {
-                type: "merchant-uuid",
+                type: customerIdType,
                 value: customerId,
             },
             customer: {
@@ -142,7 +153,20 @@ Payment Screen
                     postalCode: "05602",
                 },
             },
-        }, {
+        }
+
+        return [formSettings, clientSettings]
+    }
+
+</script>
+
+
+<script type="text/javascript">
+
+    function showForm() {
+        const [formSettings, clientSettings] = getFormValues()
+        const client = paltaBrainPayments.createPaymentClient(clientSettings);
+        client.showPaymentForm(formSettings, {
             container: "#checkout-container",
             locale: "en-US",
             vault: {
@@ -156,43 +180,43 @@ Payment Screen
                 paymentFlow: 'PREFER_VAULT',
             },
         });
+        return client;
     }
 
-    const paypalButtonElement = document.getElementById("paypal-button");
     const cardButtonElement = document.getElementById("card-button");
     const oneclickButtonElement = document.getElementById("one-click-button");
+    const refreshButtonElement = document.getElementById("refresh");
+    const [_settings, clientSettings] = getFormValues()
+    let client;
 
-    paypalButtonElement.addEventListener("click", () => {
-        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
-        settings.metadata['paypal'] = 1
-        const client = paltaBrainPayments.createPaymentClient(settings);
-        showForm(client, ident, customerId)
+
+    refreshButtonElement.addEventListener("click", () => {
+        const [formSettings, clientSettings] = getFormValues()
+        client.clientSettings = clientSettings
+        document.getElementById("order_id").value = uuid4()
+        client.updatePaymentForm({
+            orderId: document.getElementById("order_id").value,
+            customerId: formSettings.customerId,
+            ident: formSettings.ident,
+        });
     })
-
     cardButtonElement.addEventListener("click", () => {
-        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
-        settings.metadata['card'] = 1
-        console.log(settings, ident, customerId)
-        const client = paltaBrainPayments.createPaymentClient(settings);
-        showForm(client, ident, customerId)
+                const [formSettings, clientSettings] = getFormValues()
+        client = showForm()
     })
 
     oneclickButtonElement.addEventListener("click", () => {
-        const [settings, ident, customerId, apiKey, apiEndPoint] = getFormValues()
+        const [formSettings, clientSettings] = getFormValues()
         const resultElement = document.getElementById('one-click-result');
         const paymentType = document.getElementById("payment_type").value
-        const metadata = document.getElementById("metadata").value
         resultElement.textContent = '...loading...';
 
         const url = apiEndPoint + '/primer/purchase';
         const data = {
-            "customerId": {
-                "type": "merchant-uuid",
-                "value": customerId
-            },
-            "ident": ident,
+            "customerId": formSettings.customerId,
+            "ident": formSettings.ident,
             "paymentType": paymentType,
-            "metadata": JSON.parse(metadata)
+            "metadata": clientSettings.metadata
         }
 
         fetch(url, {
