@@ -211,7 +211,7 @@ Payment Screen
         const paymentType = document.getElementById("payment_type").value
         resultElement.textContent = '...loading...';
 
-        const url = apiEndPoint + '/primer/purchase';
+        const url = clientSettings.apiEndpoint + '/primer/purchase';
         const data = {
             "customerId": formSettings.customerId,
             "ident": formSettings.ident,
