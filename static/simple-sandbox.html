@@ -4,36 +4,146 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Pure html implementation</title>
+    <title>Pure HTML implementation</title>
     <script src="https://unpkg.com/@palta-brain/payments@latest/dist/umd/index.js"></script>
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main > article {
+            margin: 10px 0;
+        }
+
+        .payment-buttons > button {
+            margin-right: 10px;
+        }
+
+        .refresh-button > button {
+            margin-right: 10px;
+        }
+
+        #checkout-container {
+            width: 500px;
+        }
+
+        input {
+            width: 300px;
+        }
+    </style>
 </head>
 
 <body>
 Payment Screen
 <br/>
-<div id="log"></div>
-<br/>
-<div id="checkout-container"></div>
+
+
+<article>
+    <h2> Step 0. Fill up the parameters </h2>
+    <label for="payment_type">Payment Type:</label>
+    <select id="payment_type">
+        <option value="FIRST_PAYMENT">FIRST_PAYMENT</option>
+        <option value="SUBSCRIPTION">SUBSCRIPTION</option>
+        <option value="ECOMMERCE">ECOMMERCE</option>
+        <option value="UNSCHEDULED">UNSCHEDULED</option>
+    </select>
+    <br/>
+    <label for="order_id">Order Id</label>
+    <input type="text" id="order_id">
+    <br/>
+    <label for="customer_id">Customer Id</label>
+    <input type="text" id="customer_id">
+    <br/>
+    <label for="customer_id_type">Customer Id type</label>
+    <select id="customer_id_type">
+        <option value="merchant-uuid">merchant-uuid</option>
+        <option value="merchant-str">merchant-str</option>
+    </select>
+    <br/>
+    <label for="api_endpoint">Api Endpoint</label>
+    <input type="text" id="api_endpoint">
+    <br/>
+    <label for="api_key">Api Key:</label>
+    <input type="password" id="api_key">
+    <br/>
+    <label for="ident">Ident:</label>
+    <input type="text" id="ident">
+    <br/>
+    <br/>
+    <label for="metadata">Metadata:</label>
+    <input type="text" id="metadata">
+    <br/>
+</article>
+
+
+<article class="payment-buttons">
+    <h2> Step 1. Pay to vault a card </h2>
+    <button id="card-button">Start checkout</button>
+    <div id="checkout-container"></div>
+</article>
+
+<article class="refresh-button">
+    <h2> Step 2. Update metadata or ident if needed </h2>
+    <button id="refresh">Refresh</button>
+</article>
+
+<article class="payment-one-click">
+    <h2> Step 2. Make a one-click payment </h2>
+    <button id="one-click-button">One Click Payment</button>
+    <div id="one-click-result"></div>
+</article>
+
 <script>
-    // See: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
-    function uuidv4() {
+    function uuid4() {
         return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
     }
 
-    function showForm(ident) {
-        var orderId = uuidv4();
-        var email = "testing@paltabrain.com";
-        document.getElementById('log').innerHTML += `oderId: ${orderId}<br />email: ${email}<br />`
-        client.showPaymentForm({
+    function setDefaults() {
+        document.getElementById("payment_type").value = "FIRST_PAYMENT";
+        document.getElementById("order_id").value = uuid4();
+        document.getElementById("customer_id").value = uuid4();
+        document.getElementById("api_endpoint").value = "https://api.payments.simple.paltabrain.com";
+        document.getElementById("api_key").value = "feefe9c57a314b0bbc7baeab1eb79c41";
+        document.getElementById("metadata").value = '{"paypal": 1, "apple": 1, "card": 1}';
+    }
+
+    setDefaults();
+
+</script>
+
+<script>
+    function getFormValues() {
+        const apiEndPoint = document.getElementById("api_endpoint").value
+        const ident = document.getElementById("ident").value
+        const customerId = document.getElementById("customer_id").value
+        const customerIdType = document.getElementById("customer_id_type").value
+        const apiKey = document.getElementById("api_key").value
+        const metadata = document.getElementById("metadata").value
+        const orderId = document.getElementById("order_id").value
+
+        const clientSettings = {
+            apiEndpoint: apiEndPoint,
+            apiKey: apiKey,
+            metadata: JSON.parse(metadata),
+            onError: (error, description) => {
+                console.log(description);
+                console.log(error);
+            }
+        };
+        const formSettings = {
             ident: ident,
             countryCode: "US",
             platformCode: "desktop_web",
             orderId: orderId,
-            customerId: customerId,
+            customerId: {
+                type: customerIdType,
+                value: customerId,
+            },
             customer: {
-                emailAddress: email,
+                emailAddress: "testing@paltabrain.com",
                 billingAddress: {
                     addressLine1: "Main St",
                     addressLine2: "175",
@@ -42,7 +152,20 @@ Payment Screen
                     postalCode: "05602",
                 },
             },
-        }, {
+        }
+
+        return [formSettings, clientSettings]
+    }
+
+</script>
+
+
+<script type="text/javascript">
+
+    function showForm() {
+        const [formSettings, clientSettings] = getFormValues()
+        client = paltaBrainPayments.createPaymentClient(clientSettings);
+        client.showPaymentForm(formSettings, {
             container: "#checkout-container",
             locale: "en-US",
             vault: {
@@ -56,37 +179,68 @@ Payment Screen
                 paymentFlow: 'PREFER_VAULT',
             },
         });
+        return client;
     }
 
-    const params = new URLSearchParams(window ? window.location.search : {});
-    const customerIdValue = params.get('customer_id');
-    const customerId = {
-        type: "merchant-uuid",
-        value: customerIdValue != null ? customerIdValue : uuidv4(),
-    };
-    const settings = {
-        apiEndpoint: 'https://api.payments.paltabrain.com',
-        apiKey: 'feefe9c57a314b0bbc7baeab1eb79c41',
-        metadata: {
-            paypal: 1,
-            card: 1,
-            apple: 1
-        },
-        onError: (error, description) => {
-            console.log(description);
-            console.log(error);
-        }
-    };
+    const cardButtonElement = document.getElementById("card-button");
+    const oneclickButtonElement = document.getElementById("one-click-button");
+    const refreshButtonElement = document.getElementById("refresh");
+    const [settings, clientSettings] = getFormValues()
+    let client;
 
-    const client = paltaBrainPayments.createPaymentClient(settings);
+
+    refreshButtonElement.addEventListener("click", () => {
+        const [formSettings, clientSettings] = getFormValues()
+        client.clientSettings = clientSettings
+        document.getElementById("order_id").value = uuid4()
+        client.updatePaymentForm({
+            orderId: document.getElementById("order_id").value,
+            customerId: formSettings.customerId,
+            ident: formSettings.ident,
+        });
+    })
+    cardButtonElement.addEventListener("click", () => {
+        const [formSettings, clientSettings] = getFormValues()
+        client = showForm()
+    })
+
+    oneclickButtonElement.addEventListener("click", () => {
+        const [formSettings, clientSettings] = getFormValues()
+        const resultElement = document.getElementById('one-click-result');
+        const paymentType = document.getElementById("payment_type").value
+        resultElement.textContent = '...loading...';
+
+        const url = clientSettings.apiEndpoint + '/primer/purchase';
+        const data = {
+            "customerId": formSettings.customerId,
+            "ident": formSettings.ident,
+            "paymentType": paymentType,
+            "metadata": clientSettings.metadata
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'x-api-key': clientSettings.apiKey,
+                'x-paltabrain-trace-id': uuid4(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                resultElement.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => resultElement.textContent = error);
+    })
+    client = paltaBrainPayments.createPaymentClient(clientSettings);
     client.getPricePoints({
-        customerId: null,
+        customerId: settings.customerId,
         countryCode: "US",
         platformCode: "desktop_web",
         requestContext: {},
     }).then((pricePoints) => {
-        document.getElementById('log').innerHTML = `Price point id: ${pricePoints[0].ident}<br />customerId: ${customerId.value}<br />apiKey: ${settings.apiKey}<br />endpoint: ${settings.apiEndpoint}<br />`
-        showForm(pricePoints[0].ident)
+        document.getElementById('ident').value = pricePoints[0].ident
     })
 </script>
 </body>
