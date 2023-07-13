@@ -222,7 +222,7 @@ Payment Screen
         fetch(url, {
             method: 'POST',
             headers: {
-                'x-api-key': apiKey,
+                'x-api-key': clientSettings.apiKey,
                 'x-paltabrain-trace-id': uuid4(),
                 'Content-Type': 'application/json'
             },
