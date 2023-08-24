@@ -28,7 +28,7 @@ Payment Screen
             orderId: orderId != null ? orderId : uuidv4(),
             customerId: customerId,
             customer: {
-                emailAddress: "testing@paltabrain.com",
+                emailAddress: email,
                 billingAddress: {
                     addressLine1: "Main St",
                     addressLine2: "175",
@@ -61,6 +61,7 @@ Payment Screen
     const pricePointIdent = params.get('price_point_ident');
     const customerIdValue = params.get('customer_id');
     const orderId = params.get('order_id')
+    const email = params.get('email')
     const customerId = {
         type: "merchant-uuid",
         value: customerIdValue != null ? customerIdValue : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
