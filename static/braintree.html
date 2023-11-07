@@ -347,7 +347,7 @@
 
 
     function ecommerce_request(apiUrl, apiKey, pricePointIdent, customerId) {
-        return fetch(`${apiUrl}/checkout/ecommerce`, {
+        return fetch(`${apiUrl}/checkout/one-click`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'x-api-key': apiKey},
             body: JSON.stringify({
