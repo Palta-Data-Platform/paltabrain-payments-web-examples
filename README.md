@@ -11,3 +11,4 @@
 9. Preload - [PreLoad.tsx](src/components/PreLoad.tsx) - [demo](https://paltabrain-payments-web-examples.pages.dev/preload)
 10. Multiform - [MultiForm.tsx](src/components/MultiForm.tsx) - [demo](https://paltabrain-payments-web-examples.pages.dev/multiform)
 11. Braintree - [braintree.html](static/braintree.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/braintree.html)
+12. Manual Payments - [manual.html](static/manual.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/manual.html)
