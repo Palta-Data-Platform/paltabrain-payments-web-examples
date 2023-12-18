@@ -129,12 +129,13 @@
       return response.json();
     }
 
-    async resumePayment(paymentToken, integrationPaymentId) {
+    async resumePayment(integrationType, paymentToken, integrationPaymentId) {
       const response = await fetch(`${this.apiUrl}/checkout/resume-payment`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json', 'x-api-key': this.apiKey},
         body: JSON.stringify({
           "paymentToken": paymentToken,
+          "integrationType": integrationType,
           "integrationPaymentId": integrationPaymentId,
           "orderId": this.orderId,
         })
@@ -292,7 +293,6 @@
       });
     }
 
-
     async initializePrimer(clientToken) {
 
       this.checkout = Primer.showUniversalCheckout(clientToken, {
@@ -304,12 +304,11 @@
         onTokenizeSuccess: async (paymentMethodTokenData, handler) => {
           // Send the Payment Method Token to your server
           // to create a payment using Payments API
-          console.log('onTokenizeSuccess')
           const response = await this.createPayment('primer', paymentMethodTokenData.token, null)
           this.currentPaymentId = response.integrationPaymentId;
 
           // Call `handler.handleFailure` to cancel the flow and display an error message
-          if (!response) {
+          if (response.status !== 'success') {
             return handler.handleFailure('The payment failed. Please try with another payment method.')
           }
 
@@ -325,11 +324,10 @@
 
         onResumeSuccess: async (resumeTokenData, handler) => {
           // Send the resume token to your server to resume the payment
-          console.log(resumeTokenData)
-          const response = await this.resumePayment(resumeTokenData.resumeToken, this.currentPaymentId)
+          const response = await this.resumePayment('primer', resumeTokenData.resumeToken, this.currentPaymentId)
 
           // Call `handler.handleFailure` to cancel the flow and display an error message
-          if (!response) {
+          if (response.status !== 'success') {
             return handler.handleFailure('The payment failed. Please try with another payment method.')
           }
 
@@ -348,24 +346,24 @@
     }
 
     async initializeCheckout() {
-
       try {
         const pspData = await this.createClientSession();
         console.log("Initializing PSP SDK with data:", pspData);
-        const orderId = pspData.orderId
-        this.orderId = orderId;
+        this.orderId = pspData.orderId;
 
-        if (pspData.braintree) {
-          const paymentMethods = pspData.braintree.paymentMethods;
+        const braintreePromise = pspData.braintree ?
+          this.initializeBraintree(pspData.braintree.clientToken, pspData.braintree.paymentMethods, pspData.orderId) :
+          Promise.resolve();
 
-          await this.initializeBraintree(pspData.braintree.clientToken, paymentMethods, orderId);
-        }
+        const primerPromise = this.initializePrimer(pspData.primer.clientToken);
 
-        await this.initializePrimer(pspData.primer.clientToken);
+        // Initialize both PSPs in parallel
+        await Promise.all([braintreePromise, primerPromise]);
       } catch (error) {
         console.error('Error initializing payment:', error);
       }
     }
+
   }
 
   async function getPricePoint(apiUrl, apiKey, pricePointIdent) {
