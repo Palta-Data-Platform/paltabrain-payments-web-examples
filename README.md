@@ -11,3 +11,4 @@
 9. Preload - [PreLoad.tsx](src/components/PreLoad.tsx) - [demo](https://paltabrain-payments-web-examples.pages.dev/preload)
 10. Multiform - [MultiForm.tsx](src/components/MultiForm.tsx) - [demo](https://paltabrain-payments-web-examples.pages.dev/multiform)
 11. Manual Payments - [manual.html](static/manual.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/manual.html)
+12. Web SDK 2.0 - [web-sdk-2.html](static/web-sdk-2.html) - [demo](https://paltabrain-payments-web-examples.pages.dev/web-sdk-2)
