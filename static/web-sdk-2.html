@@ -5,70 +5,340 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <title>Web Sdk 2</title>
+    <script src="https://unpkg.com/@palta-brain/web-sdk@latest/dist/umd/index.js"></script>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: serif;
+            padding: 80px;
+        }
+
+        .form-container {
+            width: 500px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #495057;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 60%;
+            border: 1px solid #ced4da;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .form-group select {
+            width: 62%;
+            border: 1px solid #ced4da;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .disabled-button {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: default;
+            margin-left: 10px;
+        }
+
+        #primer-checkout-form {
+            display: none;
+        }
+
+        #primer-checkout-form p {
+            font-family: Arial;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: #212529;
+        }
+
+        #primer-checkout-container {
+            margin-bottom: 10px;
+        }
+
+        #braintree-checkout-container {
+            display: none;
+        }
+
+        #braintree-checkout-container p.lead {
+            font-family: Arial;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: #212529;
+        }
+
+        #paypal-button, #card-container {
+            display: none;
+        }
+
+        #card-container div {
+            margin-bottom: 1rem;
+        }
+
+        #card-container div div {
+            margin-bottom: 7px;
+        }
+
+        #card-number, #expiration-date, #cvv {
+            height: 30px;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        #card-button {
+            cursor: pointer;
+            width: 100%;
+            height: 50px;
+            padding: 0px 12px;
+            border: none;
+            text-align: center;
+            transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s, background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+            color: white;
+            font-size: 1.1rem;
+            background: rgb(36, 42, 47);
+            border-radius: 5px;
+            box-shadow: none;
+            font-family: serif;
+        }
+    </style>
 </head>
 <body>
-<div id="webSdk">
-    <div
-            id="payment-container"
-            style="display: none; width: 700px;">
-        <div
-                id="payment-status"
-                style="
-        display: none;
-        justify-content: space-evenly;
+<div id="webSdk" style="display: flex;
+        justify-content: center;
         align-items: center;
-        flex-direction: column;
-        height: 200px;"
-        >
-            <svg
-                    width="50"
-                    height="50"
-                    viewBox="0 0 50 50"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                        d="M25 0.111328C20.0774 0.111328 15.2654 1.57104 11.1725 4.30586C7.07952 7.04069 3.88945 10.9278 2.00566 15.4757C0.121883 20.0235 -0.371 25.0278 0.589343 29.8558C1.54969 34.6838 3.92012 39.1185 7.4009 42.5993C10.8817 46.0801 15.3164 48.4505 20.1444 49.4109C24.9724 50.3712 29.9767 49.8783 34.5246 47.9946C39.0724 46.1108 42.9595 42.9207 45.6944 38.8277C48.4292 34.7348 49.8889 29.9228 49.8889 25.0002C49.8889 18.3993 47.2667 12.0687 42.5991 7.40112C37.9315 2.73354 31.6009 0.111328 25 0.111328ZM41.2556 16.6469L20.8156 37.0713L8.74444 25.0002C8.33188 24.5877 8.10011 24.0281 8.10011 23.4447C8.10011 22.8612 8.33188 22.3017 8.74444 21.8891C9.157 21.4765 9.71655 21.2448 10.3 21.2448C10.8834 21.2448 11.443 21.4765 11.8556 21.8891L20.8467 30.8802L38.1756 13.5669C38.3798 13.3626 38.6223 13.2006 38.8892 13.09C39.1562 12.9795 39.4422 12.9226 39.7311 12.9226C40.02 12.9226 40.3061 12.9795 40.573 13.09C40.8399 13.2006 41.0824 13.3626 41.2867 13.5669C41.4909 13.7712 41.653 14.0137 41.7635 14.2806C41.8741 14.5475 41.931 14.8335 41.931 15.1224C41.931 15.4113 41.8741 15.6974 41.7635 15.9643C41.653 16.2312 41.4909 16.4737 41.2867 16.678L41.2556 16.6469Z"
-                        fill="#8EDFC2"
-                />
-            </svg>
-            <div>Your payment was successful!</div>
+        height: 100vh;
+        background-color: #f8f9fa;
+        font-family: serif;
+        padding: 80px;">
+    <div>
+        <div id="preparation-form" style="width: 500px; border: 1px solid #ced4da;
+          border-radius: 10px;
+          padding: 20px;
+          background-color: #ffffff">
+            <h2 style="color: #343a40; font-weight: bold; margin-bottom: 20px;">Preparation</h2>
+            <div class="form-group">
+                <label>Domain</label>
+                <input id="apiEndpoint" type="text" value="https://api.payments.dev.paltabrain.com"
+                       placeholder="Enter API Endpoint">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input id="email" type="text" placeholder="Enter Email" value="testing@paltabrain.com">
+            </div>
+            <div class="form-group">
+                <label>Api key</label>
+                <input id="api_key" type="text" placeholder="Enter API Key" value="c5e8c9fdaa8748649837371f9547e84f">
+            </div>
+            <div class="form-group">
+                <label>Customer ID</label>
+                <input id="customer_id" type="text" placeholder="Enter Customer ID">
+            </div>
+            <div class="form-group">
+                <label>Customer ID Type</label>
+                <select id="customer_id_type">
+                    <option value="merchant-uuid">merchant-uuid</option>
+                    <option value="merchant-str">merchant-str</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Order ID</label>
+                <input id="order_id" type="text" placeholder="Enter Order ID">
+            </div>
+            <div class="form-group">
+                <label>Price Point Ident</label>
+                <input id="price_point_ident" type="text" placeholder="Enter Price Point Ident" value="pp_euro">
+            </div>
+            <div class="form-group">
+                <label>Metadata</label>
+                <input id="metadata" type="text" placeholder="Enter Metadata" value='{"apple": 1}'>
+            </div>
+            <!-- Repeat the above div for each form group -->
+            <button class="button" id="first-payment" onclick="initPayment()">First payment</button>
+            <button class="disabled-button" id="one-click-button" disabled="true">One click</button>
         </div>
         <div
-                id="error-payment-status"
+                id="payment-container"
+                style="display: none; width: 700px;">
+            <div id="primer-checkout-form">
+                <p>Primer</p>
+                <div id="primer-checkout-container"></div>
+            </div>
+            <div id="braintree-checkout-container">
+                <p class="lead">Braintree</p>
+                <div id="paypal-button"></div>
+                <div id="card-container">
+                    <div>
+                        <div>Card Number</div>
+                        <div id="card-number"></div>
+                    </div>
+                    <div>
+                        <div>Expiration Date</div>
+                        <div id="expiration-date"></div>
+                    </div>
+                    <div>
+                        <div>CVV</div>
+                        <div id="cvv"></div>
+                    </div>
+                    <button id="card-button" type="submit">Pay with Card</button>
+                </div>
+            </div>
+            <div
+                id="payment-status"
                 style="
-        display: none;
-        align-items: center;
-        margin-top: 12px;
-        padding: 12px;
-        color: rgb(234, 67, 53);
-        background: rgb(252, 232, 230);
-        border-radius: 2px;
-      "
-        >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="icon"
+                display: none;
+                justify-content: space-evenly;
+                align-items: center;
+                flex-direction: column;
+                height: 200px;"
             >
-                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <span style="padding-left: 5px">
-        Your payment could not be processed. Please try another payment method.
-    </span>
+                <svg
+                        width="50"
+                        height="50"
+                        viewBox="0 0 50 50"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                            d="M25 0.111328C20.0774 0.111328 15.2654 1.57104 11.1725 4.30586C7.07952 7.04069 3.88945 10.9278 2.00566 15.4757C0.121883 20.0235 -0.371 25.0278 0.589343 29.8558C1.54969 34.6838 3.92012 39.1185 7.4009 42.5993C10.8817 46.0801 15.3164 48.4505 20.1444 49.4109C24.9724 50.3712 29.9767 49.8783 34.5246 47.9946C39.0724 46.1108 42.9595 42.9207 45.6944 38.8277C48.4292 34.7348 49.8889 29.9228 49.8889 25.0002C49.8889 18.3993 47.2667 12.0687 42.5991 7.40112C37.9315 2.73354 31.6009 0.111328 25 0.111328ZM41.2556 16.6469L20.8156 37.0713L8.74444 25.0002C8.33188 24.5877 8.10011 24.0281 8.10011 23.4447C8.10011 22.8612 8.33188 22.3017 8.74444 21.8891C9.157 21.4765 9.71655 21.2448 10.3 21.2448C10.8834 21.2448 11.443 21.4765 11.8556 21.8891L20.8467 30.8802L38.1756 13.5669C38.3798 13.3626 38.6223 13.2006 38.8892 13.09C39.1562 12.9795 39.4422 12.9226 39.7311 12.9226C40.02 12.9226 40.3061 12.9795 40.573 13.09C40.8399 13.2006 41.0824 13.3626 41.2867 13.5669C41.4909 13.7712 41.653 14.0137 41.7635 14.2806C41.8741 14.5475 41.931 14.8335 41.931 15.1224C41.931 15.4113 41.8741 15.6974 41.7635 15.9643C41.653 16.2312 41.4909 16.4737 41.2867 16.678L41.2556 16.6469Z"
+                            fill="#8EDFC2"
+                    />
+                </svg>
+                <div>Your payment was successful!</div>
+            </div>
+            <div
+                    id="error-payment-status"
+                    style="
+                    display: none;
+                    align-items: center;
+                    margin-top: 12px;
+                    padding: 12px;
+                    color: rgb(234, 67, 53);
+                    background: rgb(252, 232, 230);
+                    border-radius: 2px;
+                 "
+            >
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon"
+                >
+                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span style="padding-left: 5px">
+                    Your payment could not be processed. Please try another payment method.
+                </span>
+            </div>
         </div>
     </div>
 </div>
-<script src="https://unpkg.com/@palta-brain/web-sdk@latest/dist/umd/index.js"></script>
+<script type="text/javascript">
+    async function initPayment() {
+        const apiEndpoint = document.querySelector('#apiEndpoint').value;
+        const apiKey = document.querySelector('#api_key').value;
+        const metadata = document.querySelector('#metadata').value;
+        const email = document.querySelector('#email').value;
+        const customerId = document.querySelector('#customer_id').value;
+        const customerIdType = document.querySelector('#customer_id_type').value;
+        const orderId = document.querySelector('#order_id').value;
+        const ident = document.querySelector('#price_point_ident').value;
+
+        const clientSettings = {
+            apiEndpoint,
+            apiKey,
+            metadata,
+            email,
+            onError: (event) => console.error(event),
+            onPaymentStatusChange: () => console.log('onPaymentStatusChange'),
+        }
+        client = paltaBrainPayments.createPaymentClient(clientSettings, {value: customerId, type: customerIdType});
+
+        const formSettings = {
+            orderId,
+            ident,
+            customer: {
+                id: {value: customerId, type: customerIdType},
+                emailAddress: email,
+            },
+            metadata,
+            email,
+        };
+        const primerOption = {};
+        const braintreeOption = {};
+
+        return await client.showPaymentForm({
+            settings: formSettings,
+            primerOption,
+            braintreeOption,
+        });
+    }
+
+    function uuid4() {
+        // @ts-ignore
+
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+            (
+                c ^
+                (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+            ).toString(16)
+        );
+    }
+
+    function initData(selector) {
+        const element = document.querySelector(selector);
+        element.value = uuid4()
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initData('#order_id');
+        initData('#customer_id');
+    });
+</script>
 
 <script src="https://js.braintreegateway.com/web/3.92.2/js/client.min.js"></script>
 <script src="https://js.braintreegateway.com/web/3.92.2/js/paypal-checkout.min.js"></script>
