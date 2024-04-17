@@ -187,7 +187,7 @@
             </div>
             <div class="form-group">
                 <label>Metadata</label>
-                <input id="metadata" type="text" placeholder="Enter Metadata" value='{"apple": 1}'>
+                <input id="metadata" type="text" placeholder="Enter Metadata" value='{ apple: 1}'>
             </div>
             <!-- Repeat the above div for each form group -->
             <button class="button" id="first-payment" onclick="initPayment()">First payment</button>
@@ -220,8 +220,8 @@
                 </div>
             </div>
             <div
-                id="payment-status"
-                style="
+                    id="payment-status"
+                    style="
                 display: none;
                 justify-content: space-evenly;
                 align-items: center;
@@ -310,11 +310,19 @@
         };
         const primerOption = {};
         const braintreeOption = {};
+        const formWrapperSelector = 'preparation-form';
+        const paymentWrapperSelector = 'payment-container';
+        const primerCheckoutFormSelector = 'primer-checkout-form';
+        const braintreeCheckoutFormSelector = 'braintree-checkout-container';
 
         return await client.showPaymentForm({
             settings: formSettings,
             primerOption,
             braintreeOption,
+            formWrapperSelector,
+            paymentWrapperSelector,
+            primerCheckoutFormSelector,
+            braintreeCheckoutFormSelector,
         });
     }
 
