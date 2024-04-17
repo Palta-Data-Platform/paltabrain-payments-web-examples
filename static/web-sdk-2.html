@@ -187,7 +187,7 @@
             </div>
             <div class="form-group">
                 <label>Metadata</label>
-                <input id="metadata" type="text" placeholder="Enter Metadata" value='{ apple: 1}'>
+                <input id="metadata" type="text" placeholder="Enter Metadata" value='{ "apple": 1}'>
             </div>
             <!-- Repeat the above div for each form group -->
             <button class="button" id="first-payment" onclick="initPayment()">First payment</button>
@@ -291,7 +291,7 @@
         const clientSettings = {
             apiEndpoint,
             apiKey,
-            metadata,
+            metadata: JSON.parse(metadata),
             email,
             onError: (event) => console.error(event),
             onPaymentStatusChange: () => console.log('onPaymentStatusChange'),
@@ -305,7 +305,6 @@
                 id: {value: customerId, type: customerIdType},
                 emailAddress: email,
             },
-            metadata,
             email,
         };
         const primerOption = {};
