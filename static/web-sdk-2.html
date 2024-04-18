@@ -189,6 +189,13 @@
                 <label>Metadata</label>
                 <input id="metadata" type="text" placeholder="Enter Metadata" value='{ "apple": 1}'>
             </div>
+            <div class="form-group">
+                <label>PayPal env</label>
+                <select id="payPalEnv" type="text">
+                    <option selected value="sandbox">sandbox</option>
+                    <option value="production">production</option>
+                </select>
+            </div>
             <!-- Repeat the above div for each form group -->
             <button class="button" id="first-payment" onclick="initPayment()">First payment</button>
             <button class="disabled-button" id="one-click-button" disabled="true">One click</button>
@@ -287,6 +294,7 @@
         const customerIdType = document.querySelector('#customer_id_type').value;
         const orderId = document.querySelector('#order_id').value;
         const ident = document.querySelector('#price_point_ident').value;
+        const payPalEnv = document.querySelector('#payPalEnv').value;
 
         const clientSettings = {
             apiEndpoint,
@@ -322,6 +330,7 @@
             paymentWrapperSelector,
             primerCheckoutFormSelector,
             braintreeCheckoutFormSelector,
+            payPalEnv
         });
     }
 
