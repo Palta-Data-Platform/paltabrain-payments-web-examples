@@ -77,7 +77,7 @@
         "@primer-io/checkout-web": "^2.27.2",
         "antd": "^5.6.3",
         "react-router-dom": "^6.9.0",
-        "sass": "^1.59.3",
+        "sass": "^1.62.0",
         "uuid": "^9.0.0"
     }
 }
