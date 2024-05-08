@@ -316,7 +316,15 @@
             email,
         };
         const primerOption = {};
-        const braintreeOption = {};
+        const braintreeOption = {
+            createOrder: (data) => console.log(data),
+            createPayment: (data) => console.log(data),
+            onCancel: (data) => console.log(data),
+            threeDSecureOnLookupComplete: (data, details) =>
+                console.log(data, details),
+            threeDSecureValidated: (value) =>
+                console.log('threeDSecureValidated', value),
+        };
         const formWrapperSelector = 'preparation-form';
         const paymentWrapperSelector = 'payment-container';
         const primerCheckoutFormSelector = 'primer-checkout-form';
