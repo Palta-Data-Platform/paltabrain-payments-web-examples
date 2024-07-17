@@ -314,6 +314,7 @@
                 emailAddress: email,
             },
             email,
+            countryCode: 'US',
         };
         const primerOption = {};
         const braintreeOption = {
@@ -324,6 +325,24 @@
                 console.log(data, details),
             threeDSecureValidated: (value) =>
                 console.log('threeDSecureValidated', value),
+            onBeforePaymentCreate: (e) =>
+                console.log('onBeforePaymentCreate', e),
+            styles: {
+                input: {
+                    'font-size': '14px',
+                    'font-family': 'Arial, sans-serif',
+                },
+                ':focus': {
+                    color: 'black',
+                },
+            },
+            applePayOptions: {
+                merchantCapabilities: ['supports3DS'],
+                supportedNetworks: ['visa', 'masterCard', 'amex', 'discover'],
+                total: {
+                    label: 'Demo (Card is not charged)',
+                },
+            },
         };
         const formWrapperSelector = 'preparation-form';
         const paymentWrapperSelector = 'payment-container';
