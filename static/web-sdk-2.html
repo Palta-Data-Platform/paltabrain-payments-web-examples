@@ -319,7 +319,7 @@
             metadata: JSON.parse(metadata),
             email,
             onError: (event) => console.error(event),
-            onPaymentStatusChange: () => console.log('onPaymentStatusChange'),
+            onPaymentStatusChange: (value) => console.log('onPaymentStatusChange', value),
         }
         client = paltaBrainPayments.createPaymentClient(clientSettings, {value: customerId, type: customerIdType});
 
