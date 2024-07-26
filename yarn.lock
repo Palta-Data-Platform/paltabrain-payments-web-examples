@@ -1435,17 +1435,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@palta-brain/payments@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.4.0.tgz#e364db402d331caf98f01c8e57b452a5dfe45653"
-  integrity sha512-F35Wv/mUSl0KxWC4Y4BBj+PxEwJ7oMQsamVARr5wEtXFh9afCLPowtL37ZTCxjsuQXNcozILkmlMMvOEhNf77A==
+"@palta-brain/payments@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@palta-brain/payments/-/payments-0.20.0.tgz#87f97702dba39a82ed1cda2911eed7c355eb7745"
+  integrity sha512-2zsPvPW4udpyAR/5QOn56scobNNPF4MBNPO8m2oqIVxETE475gNABLMwy57ee/e/DR0Cnw+tyCC5VprtWEW+OQ==
   dependencies:
-    "@primer-io/checkout-web" "2.31.0"
+    "@primer-io/checkout-web" "2.39.0"
+    semver "^7.6.0"
+    uuid "^9.0.1"
 
-"@primer-io/checkout-web@2.31.0":
-  version "2.31.0"
-  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.31.0.tgz#a45a3461e32f505dcc49150916b14ffd36aa9b80"
-  integrity sha512-54XUFf2OkDV/UaBta9ZhJc3k6rNPm5c6IfrOrQvrGAN1uNQXJSAGbdj6vbkHylM4f7oNK6OFYJ794epsV4Fr2A==
+"@primer-io/checkout-web@2.39.0":
+  version "2.39.0"
+  resolved "https://registry.yarnpkg.com/@primer-io/checkout-web/-/checkout-web-2.39.0.tgz#53c0c55f57abd85cc283ca7f6f60be81754b2672"
+  integrity sha512-LD/pPf04/w6ida6p3Tp+lH7LYtggfJyJLfm1MjqdzOtoSXrvy2rxu8SqZeYN3aywdLikKJOv5PVMyrMLjUonsw==
 
 "@primer-io/checkout-web@^2.27.2":
   version "2.27.2"
@@ -7227,6 +7229,13 @@ semver@^7.3.5, semver@^7.3.7, semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.0.tgz#1a46a4db4bffcccd97b743b5005c8325f23d4e2d"
+  integrity sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==
+  dependencies:
+    lru-cache "^6.0.0"
+
 send@0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/send/-/send-0.18.0.tgz#670167cc654b05f5aa4a767f9113bb371bc706be"
@@ -7956,6 +7965,11 @@ uuid@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
+
+uuid@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
+  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 v8-to-istanbul@^9.0.1:
   version "9.1.0"
